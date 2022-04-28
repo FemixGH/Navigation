@@ -3,6 +3,7 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -105,7 +106,7 @@ public class fragment1 extends Fragment {
                 container,false);
 
         button = view.findViewById(R.id.takePicture);
-        imageView = view.findViewById(R.id.capturedImage);
+
         previewView = view.findViewById(R.id.previewView);
         cameraProviderListenableFuture = ProcessCameraProvider.getInstance(getActivity());
 
@@ -126,13 +127,7 @@ public class fragment1 extends Fragment {
             @SuppressLint("QueryPermissionsNeeded")
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Chik",
-                        Toast.LENGTH_SHORT).show();
-
                 capturePhoto();
-
-                Toast.makeText(getActivity(), "End",
-                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -140,26 +135,23 @@ public class fragment1 extends Fragment {
 
     }
 
+
+
     private void capturePhoto() {
-        File photoDir = new File("/mnt/sdcard/Pictures/CameraXPhotos");
 
+        long timestamp = System.currentTimeMillis();
 
-        if(photoDir.mkdir()){
-            Toast.makeText(getActivity(), "Directory has been saved successfully",
-                    Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getActivity(), "Ooops",
-                    Toast.LENGTH_SHORT).show();
-        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
 
-        Date date = new Date();
-        String timestamp = String.valueOf(date.getTime());
-        String photoFilePath = photoDir.getAbsolutePath() + "/" + timestamp + ".jpg";
-
-        File photoFile = new File(photoFilePath);
 
         imageCapture.takePicture(
-                new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
+                new ImageCapture.OutputFileOptions.Builder(
+                        getActivity().getContentResolver(),
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        contentValues
+                ).build(),
                 getExecutor(),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override

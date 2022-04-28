@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     tools:context=".fragment2">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/Linear_2"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
@@ -24,7 +29,7 @@
 
             <Button
                 android:layout_width="0dp"
-
+                android:id="@+id/button2"
                 android:layout_height="match_parent"
                 android:layout_weight="14"/>
 
@@ -34,6 +39,9 @@
 
 
         <ImageView
+            app:layout_constraintTop_toBottomOf="@+id/Linear_2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/capturedImage_on_2"
 
             android:layout_width="320dp"
@@ -43,6 +51,6 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
