@@ -21,10 +21,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    viewBinding{
+        enabled = true
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildToolsVersion '31.0.0'
 }
 
 dependencies {
@@ -45,5 +50,11 @@ dependencies {
 
 // CameraX View class
     implementation 'androidx.camera:camera-view:1.0.0-alpha25'
+
+    implementation platform('com.google.cloud:libraries-bom:25.2.0')
+
+    implementation 'com.google.cloud:google-cloud-language'
+
+//    implementation 'com.google.cloud.language.v1.LanguageServiceClient'
 
 }
