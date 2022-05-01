@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -23,6 +24,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.provider.MediaStore;
@@ -49,6 +51,7 @@ import java.util.concurrent.Executor;
 public class fragment1 extends Fragment {
     Button button;
     ImageView imageView;
+    ImageView view_on_2;
     ActivityResultLauncher<Intent> activityResultLauncher;
     Bitmap bitmap;
     private ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture;
@@ -106,7 +109,7 @@ public class fragment1 extends Fragment {
                 container,false);
 
         button = view.findViewById(R.id.takePicture);
-
+        view_on_2 = view.findViewById(R.id.capturedImage_on_2);
         previewView = view.findViewById(R.id.previewView);
         cameraProviderListenableFuture = ProcessCameraProvider.getInstance(getActivity());
 
@@ -158,6 +161,7 @@ public class fragment1 extends Fragment {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Toast.makeText(getActivity(), "Photo has been saved successfully",
                                 Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override

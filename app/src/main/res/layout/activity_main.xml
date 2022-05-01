@@ -16,7 +16,7 @@
         app:tabTextColor="@color/My_Bright_Grey"
         android:background="@color/My_Grey"
         android:id="@+id/tablayout"
-        app:tabSelectedTextColor="@color/My_Orange"
+        app:tabSelectedTextColor="@color/teal_700"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

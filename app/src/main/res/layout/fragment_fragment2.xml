@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
+    android:background="@color/My_Grey"
     android:focusableInTouchMode="true"
     tools:context=".fragment2">
 
@@ -50,6 +51,27 @@
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginBottom="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+            <Button
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/teal_700"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gallery"
+                android:id="@+id/gallery"
+
+                android:textColor="@color/My_Bright_Grey"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
