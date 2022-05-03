@@ -1,10 +1,12 @@
 package com.example.navigation;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +40,9 @@ import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -49,6 +54,8 @@ import java.util.concurrent.Executor;
  * create an instance of this fragment.
  */
 public class fragment1 extends Fragment {
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String KEY = "myKey";
     Button button;
     ImageView imageView;
     ImageView view_on_2;
@@ -130,7 +137,7 @@ public class fragment1 extends Fragment {
             @SuppressLint("QueryPermissionsNeeded")
             @Override
             public void onClick(View view) {
-                capturePhoto();
+                capturePhoto(view);
             }
         });
 
@@ -140,7 +147,7 @@ public class fragment1 extends Fragment {
 
 
 
-    private void capturePhoto() {
+    private void capturePhoto(View view) {
 
         long timestamp = System.currentTimeMillis();
 
@@ -161,7 +168,16 @@ public class fragment1 extends Fragment {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Toast.makeText(getActivity(), "Photo has been saved successfully",
                                 Toast.LENGTH_SHORT).show();
+                        Uri mImageCaptureUri = outputFileResults.getSavedUri();
 
+                        //uri->String->fr2
+                        String pUri = mImageCaptureUri.toString();
+                        Bundle result = new Bundle();
+                        result.putString("df1", pUri);
+                        getParentFragmentManager().setFragmentResult("dataFrom1", result);
+
+
+//
                     }
 
                     @Override
@@ -200,6 +216,5 @@ public class fragment1 extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 }

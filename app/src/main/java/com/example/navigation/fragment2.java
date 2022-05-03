@@ -1,9 +1,13 @@
 package com.example.navigation;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+import static android.provider.Contacts.SettingsColumns.KEY;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,8 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +38,8 @@ import android.widget.Toast;
 public class fragment2 extends Fragment {
     Button search,gallery;
     EditText edit;
-
+    private final String KEY = "myKey";
+    private static final String SHARED_PREFS = "sharedPrefs";
     public  ImageView image;
 
     ActivityResultLauncher<String> mTakePhoto;
@@ -54,15 +61,6 @@ public class fragment2 extends Fragment {
         return inflater.inflate(R.layout.fragment_fragment2, container, false);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == RESULT_OK && data!=null){
-            Uri selectedImage = data.getData();
-            image.setImageURI(selectedImage);
-        }
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -92,9 +90,6 @@ public class fragment2 extends Fragment {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(gallery, 3);
-
                     mTakePhoto.launch("image/*");
 
             }
@@ -110,6 +105,17 @@ public class fragment2 extends Fragment {
                 }
 
         );
+
+        getParentFragmentManager().setFragmentResultListener("dataFrom1", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                String data = result.getString("df1");
+                Uri mPhoto = Uri.parse(data);
+                image.setImageURI(mPhoto);
+
+            }
+        });
 
 
     }

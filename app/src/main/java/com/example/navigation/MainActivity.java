@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(new fragment1(), "CALLS");
-        vpAdapter.addFragment(new fragment2(), "STATUS");
-        vpAdapter.addFragment(new fragment3(), "CHATS");
+        vpAdapter.addFragment(new fragment1(), "CAMERA");
+        vpAdapter.addFragment(new fragment2(), "EDITING");
+        vpAdapter.addFragment(new fragment3(), "GALLERY");
 
 
         viewPager.setAdapter(vpAdapter);
