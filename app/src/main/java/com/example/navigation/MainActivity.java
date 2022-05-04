@@ -1,14 +1,14 @@
 package com.example.navigation;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 
