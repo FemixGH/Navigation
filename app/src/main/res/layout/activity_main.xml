@@ -15,7 +15,7 @@
     <com.google.android.material.tabs.TabLayout
         app:tabTextColor="@color/My_Bright_Grey"
         android:background="@color/My_Grey"
-        android:id="@+id/tablayout"
+        android:id="@+id/tableLayout"
         app:tabSelectedTextColor="@color/teal_700"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="teal_700">#ffffff</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="My_Orange">#c7952a</color>
@@ -12,6 +12,6 @@
     <color name="My_Grey_Bright_blue">#59706d</color>
     //#616161
     //#59706d
-    <color name="My_Grey_2">#8f8f8f</color>
-    <color name="My_Bright_Grey">#a6a6a6</color>
+    <color name="My_Grey_2">#ffffff</color>
+    <color name="My_Bright_Grey">#ffffff</color>
 </resources>

@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.navigation.databinding.ActivityMainBinding;
 import com.google.android.material.tabs.TabLayout;
 
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE= 56755;
     private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE= 234123;
 
-
+    private ActivityMainBinding binding;
 //    @Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -35,19 +36,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
-        tabLayout = findViewById(R.id.tablayout);
-        viewPager = findViewById(R.id.viewpager);
+        tabLayout = binding.tableLayout;
+        viewPager = binding.viewpager;
 
         tabLayout.setupWithViewPager(viewPager);
 
 
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(new fragment1(), "CAMERA");
-        vpAdapter.addFragment(new fragment2(), "EDITING");
-        vpAdapter.addFragment(new fragment3(), "GALLERY");
+        vpAdapter.addFragment(new FirstFragment(), "CAMERA");
+        vpAdapter.addFragment(new SecondFragment(), "EDITING");
+        vpAdapter.addFragment(new ThirdFragment(), "GALLERY");
 
 
         viewPager.setAdapter(vpAdapter);

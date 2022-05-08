@@ -9,12 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.camera.core.ImageCapture;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.navigation.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
+
+    private ActivityMainBinding binding;
 
     ArrayList<Image> previews;
     ArrayList<String> comments;
@@ -54,8 +57,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            comments= itemView.findViewById(R.id.comments_textView);
+            comments = itemView.findViewById(R.id.comments_textView);
             images = itemView.findViewById(R.id.preview_photo);
 
         }

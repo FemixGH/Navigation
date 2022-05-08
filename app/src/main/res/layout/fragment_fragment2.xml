@@ -7,7 +7,7 @@
     android:clickable="true"
     android:background="@color/My_Grey"
     android:focusableInTouchMode="true"
-    tools:context=".fragment2">
+    tools:context=".SecondFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toBottomOf="@+id/Linear_2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:id="@+id/capturedImage_on_2"
+            android:id="@+id/capturedImageSecond"
 
             android:layout_width="320dp"
             android:layout_height="480dp"
