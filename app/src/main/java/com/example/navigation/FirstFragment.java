@@ -1,11 +1,15 @@
 package com.example.navigation;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +34,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.example.navigation.databinding.FragmentFragment1Binding;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
@@ -153,8 +158,11 @@ public class FirstFragment extends Fragment {
                         result.putString("df1", pUri);
                         getParentFragmentManager().setFragmentResult("dataFrom1", result);
 
+                        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
 
-//
+                        editor.putString("photo", pUri);
+                        editor.apply();
                     }
 
                     @Override

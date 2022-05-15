@@ -7,11 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
 
-    />
     <com.google.android.material.tabs.TabLayout
         app:tabTextColor="@color/My_Bright_Grey"
         android:background="@color/My_Grey"
@@ -46,8 +42,10 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(new FirstFragment(), "CAMERA");
         vpAdapter.addFragment(new SecondFragment(), "EDITING");
-        vpAdapter.addFragment(new ThirdFragment(), "GALLERY");
+        vpAdapter.addFragment(new ThirdFragment(), "GALLERY OF Filters");
+        vpAdapter.addFragment(new FirstFragment(), "CAMERA");
+
 
 
         viewPager.setAdapter(vpAdapter);
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
         }
+
 
 
 
