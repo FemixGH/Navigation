@@ -69,7 +69,7 @@
             android:id="@+id/gallery"
             android:layout_width="73dp"
             android:layout_height="56dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="54dp"
             android:background="?attr/selectableItemBackground"
             android:textColor="@color/My_Bright_Grey"
             app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
