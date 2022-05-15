@@ -23,14 +23,14 @@
 
             <EditText
                 android:id="@+id/Search_text_on_2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:textColor="@color/My_Bright_Grey"
-                android:layout_width="0dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_weight="100"
+                android:textColor="@color/My_Bright_Grey"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/button2"
-            />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
@@ -65,21 +65,20 @@
             android:layout_gravity="center" />
 
 
-            <com.google.android.material.button.MaterialButton
-                app:layout_constraintBottom_toBottomOf="@id/capturedImageSecond"
-                android:background="?attr/selectableItemBackground"
-                app:layout_constraintRight_toRightOf="@id/capturedImageSecond"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="45dp"
-                android:id="@+id/gallery"
-                app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/gallery"
+            android:layout_width="73dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="55dp"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="@color/My_Bright_Grey"
+            app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
+            app:layout_constraintBottom_toBottomOf="@id/capturedImageSecond"
 
 
-                android:textColor="@color/My_Bright_Grey"
+            app:layout_constraintEnd_toEndOf="parent"
 
-                />
-
+            app:layout_constraintRight_toRightOf="@id/capturedImageSecond" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
