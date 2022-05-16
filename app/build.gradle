@@ -66,9 +66,12 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    implementation platform('com.google.cloud:libraries-bom:25.2.0')
-
-    implementation 'com.google.cloud:google-cloud-language'
 //photofilters
-    //implementation 'com.github.zomato:androidphotofilters:1.0.2'
+    implementation 'com.github.zomato:androidphotofilters:1.0.2'
+
+    //todo problem repository
+    //implementation 'com.github.apanimesh061:VaderSentimentJava:v1.1.1'
+
+
+
 }
