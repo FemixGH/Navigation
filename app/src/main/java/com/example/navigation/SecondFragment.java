@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -28,13 +29,16 @@ import androidx.fragment.app.FragmentResultListener;
 import com.example.navigation.databinding.FragmentFragment2Binding;
 
 
+
 public class SecondFragment extends Fragment {
     Button search,gallery;
     EditText edit;
+    TextView testMention;
     private final String mKEY_TEXT = "myKey_text";
     private final String mKEY_PHOTO = "myKey_photo";
     private static final String SHARED_PREFS = "sharedPrefs";
     private static final String SHARED_PREFS_PHOTO = "sharedPrefs_photo";
+    private static final String TEXT = "text";
     public  ImageView image;
     public Uri mPhoto;
 
@@ -62,19 +66,20 @@ public class SecondFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         edit = binding.SearchTextOn2;
         image = binding.capturedImageSecond;
-        edit = view.findViewById(R.id.Search_text_on_2);
-        image = view.findViewById(R.id.capturedImageSecond);
 
-        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        SharedPreferences.Editor editor = pref.edit();
+        //SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
 
 
 
-        edit.setText(pref.getString("text", null));
+
+
+        //edit.setText(pref.getString("text", null));
 
         edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -86,13 +91,33 @@ public class SecondFragment extends Fragment {
             }
         });
 
+        testMention = binding.testMention;
 
         search = binding.button2;
         search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                editor.putString("text", edit.getText().toString());
+            public void onClick(View view)  {
+                //editor.putString("text", edit.getText().toString());
+                //editor.apply();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(TEXT, edit.getText().toString());
                 editor.apply();
+                Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
+
+                String text = sharedPreferences.getString(TEXT, "");
+
+                testMention.setText(text);
+
+                //org.example.Test.testingSentimentAnalyse();
+
+                //com.example.navigation.Analyze analyze = new Analyze();
+
+                String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
+
+
+
             }
         });
 
@@ -123,8 +148,15 @@ public class SecondFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
 
                 String data = result.getString("df1");
-                editor.putString("photo", data);
-                editor.apply();
+
+                SharedPreferences sharedPreferences2 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+
+                editor2.putString("photo", data);
+
+                editor2.apply();
+
+
                 Uri mPhoto = Uri.parse(data);
                 image.setImageURI(mPhoto);
 
