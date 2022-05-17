@@ -7,10 +7,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,11 @@ import androidx.lifecycle.LifecycleOwner;
 import com.example.navigation.databinding.FragmentFragment1Binding;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
@@ -42,7 +49,7 @@ import java.util.concurrent.Executor;
 
 
 public class FirstFragment extends Fragment {
-    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String KEY = "myKey";
     Button button;
     ImageView imageView;
@@ -151,17 +158,28 @@ public class FirstFragment extends Fragment {
                         Toast.makeText(getActivity(), "Photo has been saved successfully",
                                 Toast.LENGTH_SHORT).show();
                         Uri mImageCaptureUri = outputFileResults.getSavedUri();
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageCaptureUri);
+
+                        } catch (IOException e) {
+                            Toast.makeText(getActivity(), "Ooops " + e.toString(),
+                                    Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+
 
                         //uri->String->fr2
                         String pUri = mImageCaptureUri.toString();
                         Bundle result = new Bundle();
-                        result.putString("df1", pUri);
+                        result.putString("df1", BitMapToString(bitmap));
                         getParentFragmentManager().setFragmentResult("dataFrom1", result);
 
                         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
 
-                        editor.putString("photo", pUri);
+
+                        editor.putString("photo_bit", BitMapToString(bitmap));
+
                         editor.apply();
                     }
 
@@ -207,5 +225,29 @@ public class FirstFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 }

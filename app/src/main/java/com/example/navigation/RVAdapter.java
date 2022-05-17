@@ -19,13 +19,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     private ActivityMainBinding binding;
 
-    ArrayList<Image> previews;
-    ArrayList<String> comments;
+
+    ArrayList<String> comments = new ArrayList<String>();
     Context context;
 
-    public RVAdapter(Context ct, ArrayList<Image> images, ArrayList<String> comments){
+    public RVAdapter(Context ct, ArrayList<String> comments){
         this.comments=comments;
-        this.previews=images;
+
         this.context=ct;
 
     }
@@ -47,8 +47,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        //return previews.size();
-        return 0;
+        return comments.size();
+
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -58,7 +58,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             comments = itemView.findViewById(R.id.comments_textView);
-            images = itemView.findViewById(R.id.preview_photo);
 
         }
     }

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 
 public class ThirdFragment extends Fragment {
-    ArrayList<Image> storyImages;
-    ArrayList<String> storyComments;
+
+    ArrayList<String> filterComments = new ArrayList<String>();
     RecyclerView recyclerView;
 
     private FragmentFragment3Binding binding;
@@ -28,9 +28,12 @@ public class ThirdFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        filterComments.add("filter1");
+        filterComments.add("filter1");
+
         recyclerView = binding.recycleView;
-        RVAdapter rvAdapter = new RVAdapter(getContext(),storyImages,storyComments);
-        recyclerView.setAdapter(new RVAdapter(getContext(), storyImages,storyComments));
+        RVAdapter rvAdapter = new RVAdapter(getContext(),filterComments);
+        recyclerView.setAdapter(new RVAdapter(getContext(),filterComments));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     }
@@ -40,7 +43,13 @@ public class ThirdFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        filterComments.add("filter1");
+        filterComments.add("filter1");
 
+        recyclerView = binding.recycleView;
+        RVAdapter rvAdapter = new RVAdapter(getContext(),filterComments);
+        recyclerView.setAdapter(new RVAdapter(getContext(),filterComments));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return inflater.inflate(R.layout.fragment_fragment3, container, false);
 

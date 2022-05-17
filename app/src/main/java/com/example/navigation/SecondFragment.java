@@ -4,10 +4,15 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +33,10 @@ import androidx.fragment.app.FragmentResultListener;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+
 //import com.vader.sentiment.analyzer;
 
 
@@ -35,6 +44,7 @@ public class SecondFragment extends Fragment {
     Button search,gallery;
     EditText edit;
     TextView testMention;
+    Bitmap bitmap;
     private final String mKEY_TEXT = "myKey_text";
     private final String mKEY_PHOTO = "myKey_photo";
     private static final String SHARED_PREFS = "sharedPrefs";
@@ -58,8 +68,13 @@ public class SecondFragment extends Fragment {
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
 
 
+
         return binding.getRoot();
     }
+    public void setUri(Uri u){
+        this.mPhoto=u;
+    }
+
 
 
 
@@ -67,20 +82,16 @@ public class SecondFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
 
         edit = binding.SearchTextOn2;
         image = binding.capturedImageSecond;
+        String str = pref.getString("photo_bit", null);
 
+        image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
 
-        //SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-
-
-
-
-
-
-        //edit.setText(pref.getString("text", null));
+        edit.setText(pref.getString(TEXT, null));
 
         edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -105,9 +116,11 @@ public class SecondFragment extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(TEXT, edit.getText().toString());
                 editor.apply();
+                editor.putString("photo_bit", str);
+                editor.apply();
                 Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
 
-                String text = sharedPreferences.getString(TEXT, "");
+                String text = sharedPreferences.getString(TEXT, null);
 
                 testMention.setText(text);
 
@@ -131,12 +144,22 @@ public class SecondFragment extends Fragment {
 
             }
         });
-
         mTakePhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
                         image.setImageURI(result);
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
+                            SharedPreferences sharedPreferences3 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+                            SharedPreferences.Editor editor3 = sharedPreferences3.edit();
+
+                            editor3.putString("photo_bit", BitMapToString(bitmap));
+
+                            editor3.apply();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 }
@@ -153,19 +176,42 @@ public class SecondFragment extends Fragment {
                 SharedPreferences sharedPreferences2 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor2 = sharedPreferences2.edit();
 
-                editor2.putString("photo", data);
+                editor2.putString("photo_bit", data);
 
                 editor2.apply();
 
 
-                Uri mPhoto = Uri.parse(data);
-                image.setImageURI(mPhoto);
+                image.setImageBitmap(RotateBitmap(StringToBitMap(data), 90));
 
             }
         });
 
 
 
+    }
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
 }
