@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentResultListener;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 
+//import com.vader.sentiment.analyzer;
 
 
 public class SecondFragment extends Fragment {
