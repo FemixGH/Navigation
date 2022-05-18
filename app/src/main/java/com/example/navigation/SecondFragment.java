@@ -32,6 +32,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
+import com.vader.sentiment.analyzer.SentimentAnalyzer;
+import com.vader.sentiment.analyzer.SentimentPolarities;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -89,7 +92,13 @@ public class SecondFragment extends Fragment {
         image = binding.capturedImageSecond;
         String str = pref.getString("photo_bit", null);
 
-        image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
+        //todo this crash app
+        if (str != null){
+            image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
+        }
+
+
+
 
         edit.setText(pref.getString(TEXT, null));
 
@@ -124,11 +133,12 @@ public class SecondFragment extends Fragment {
 
                 testMention.setText(text);
 
-                //org.example.Test.testingSentimentAnalyse();
-
-                //com.example.navigation.Analyze analyze = new Analyze();
 
                 String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
+
+                final SentimentPolarities sentimentPolarities =
+                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
+                System.out.println(sentimentPolarities);
 
 
 
@@ -144,6 +154,7 @@ public class SecondFragment extends Fragment {
 
             }
         });
+
         mTakePhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
                     @Override
@@ -153,6 +164,7 @@ public class SecondFragment extends Fragment {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
                             SharedPreferences sharedPreferences3 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                             SharedPreferences.Editor editor3 = sharedPreferences3.edit();
+
 
                             editor3.putString("photo_bit", BitMapToString(bitmap));
 
@@ -181,6 +193,7 @@ public class SecondFragment extends Fragment {
                 editor2.apply();
 
 
+
                 image.setImageBitmap(RotateBitmap(StringToBitMap(data), 90));
 
             }
@@ -189,8 +202,9 @@ public class SecondFragment extends Fragment {
 
 
     }
+
     public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        ByteArrayOutputStream baos =new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
         byte [] b=baos.toByteArray();
         String temp= Base64.encodeToString(b, Base64.DEFAULT);

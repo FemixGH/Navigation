@@ -15,12 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.navigation.databinding.FragmentFragment3Binding;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class ThirdFragment extends Fragment {
 
     ArrayList<String> filterComments = new ArrayList<String>();
     RecyclerView recyclerView;
+
+    RecyclerView recyclerView2;
+
+    ArrayList images, name;
 
     private FragmentFragment3Binding binding;
 
@@ -45,11 +50,23 @@ public class ThirdFragment extends Fragment {
         View view = binding.getRoot();
         filterComments.add("filter1");
         filterComments.add("filter1");
+//todo
+//        recyclerView = binding.recycleView;
+//        recyclerView2 = binding.recycleView;
+//        images = new ArrayList();
+//        name = new ArrayList();
+//
+//        for (int i = 0; i <Data.names.lenght; i++){
+//            images.add(Data.images);
+//            name.add(Date.names);
+//        }
 
-        recyclerView = binding.recycleView;
         RVAdapter rvAdapter = new RVAdapter(getContext(),filterComments);
         recyclerView.setAdapter(new RVAdapter(getContext(),filterComments));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+
 
         return inflater.inflate(R.layout.fragment_fragment3, container, false);
 

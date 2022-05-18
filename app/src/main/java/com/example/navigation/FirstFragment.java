@@ -100,13 +100,8 @@ public class FirstFragment extends Fragment {
 
 
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("QueryPermissionsNeeded")
-            @Override
-            public void onClick(View view) {
-                capturePhoto(view);
-            }
-        });
+        button.setOnClickListener(view1 ->
+                capturePhoto(view1));
 
         return view;
 
