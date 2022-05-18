@@ -23,16 +23,19 @@ public class ThirdFragment extends Fragment {
     ArrayList<String> filterComments = new ArrayList<String>();
     RecyclerView recyclerView;
 
-    RecyclerView recyclerView2;
+    //RecyclerView recyclerView2;
 
     ArrayList images, name;
 
     private FragmentFragment3Binding binding;
 
 
+
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentFragment3Binding.inflate(inflater, container, false);
         filterComments.add("filter1");
         filterComments.add("filter1");
 
@@ -40,13 +43,6 @@ public class ThirdFragment extends Fragment {
         RVAdapter rvAdapter = new RVAdapter(getContext(),filterComments);
         recyclerView.setAdapter(new RVAdapter(getContext(),filterComments));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentFragment3Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
         filterComments.add("filter1");
         filterComments.add("filter1");
@@ -61,7 +57,7 @@ public class ThirdFragment extends Fragment {
 //            name.add(Date.names);
 //        }
 
-        RVAdapter rvAdapter = new RVAdapter(getContext(),filterComments);
+
         recyclerView.setAdapter(new RVAdapter(getContext(),filterComments));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -69,6 +65,12 @@ public class ThirdFragment extends Fragment {
 
 
         return inflater.inflate(R.layout.fragment_fragment3, container, false);
+
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
 
     }
 }

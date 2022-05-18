@@ -57,7 +57,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            comments = itemView.findViewById(R.id.comments_textView);
+            comments = itemView.findViewById(R.id.infoText);
 
         }
     }

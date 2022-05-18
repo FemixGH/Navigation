@@ -32,8 +32,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
-import com.vader.sentiment.analyzer.SentimentAnalyzer;
-import com.vader.sentiment.analyzer.SentimentPolarities;
+//import com.vader.sentiment.analyzer.SentimentAnalyzer;
+//import com.vader.sentiment.analyzer.SentimentPolarities;
 
 
 import java.io.ByteArrayOutputStream;
@@ -87,7 +87,7 @@ public class SecondFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-
+        System.loadLibrary("NativeImageProcessor");
         edit = binding.SearchTextOn2;
         image = binding.capturedImageSecond;
         String str = pref.getString("photo_bit", null);
@@ -134,11 +134,13 @@ public class SecondFragment extends Fragment {
                 testMention.setText(text);
 
 
+
+
                 String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
 
-                final SentimentPolarities sentimentPolarities =
-                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
-                System.out.println(sentimentPolarities);
+//                final SentimentPolarities sentimentPolarities =
+//                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
+//                System.out.println(sentimentPolarities);
 
 
 
