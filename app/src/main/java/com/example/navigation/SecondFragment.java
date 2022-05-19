@@ -58,7 +58,7 @@ import java.util.Objects;
 
 
 public class SecondFragment extends Fragment {
-    Button search,gallery, filter, camera;
+    Button search,gallery, filter, camera, clear;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
@@ -106,6 +106,7 @@ public class SecondFragment extends Fragment {
         edit = binding.SearchTextOn2;
         image = binding.capturedImageSecond;
         camera = binding.photoButton;
+        clear = binding.clearText;
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -221,6 +222,12 @@ public class SecondFragment extends Fragment {
             }
         });
 
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                edit.setText("");
+            }
+        });
 
 
 
