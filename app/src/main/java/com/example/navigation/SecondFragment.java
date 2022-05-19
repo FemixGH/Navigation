@@ -51,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 //import com.vader.sentiment.analyzer;
@@ -113,6 +114,7 @@ public class SecondFragment extends Fragment {
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     image.setImageBitmap(bitmap);
                     saveToInternalStorage(bitmap);
+                    MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, String.valueOf(System.currentTimeMillis()), "");
                 }
             }
         });
@@ -140,7 +142,6 @@ public class SecondFragment extends Fragment {
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("text", edit.getText().toString());
-                editor.apply();
                 editor.apply();
                 Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
 
