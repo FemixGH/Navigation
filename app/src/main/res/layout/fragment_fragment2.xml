@@ -112,6 +112,17 @@
             app:layout_constraintEnd_toStartOf="@+id/capturedImageSecond"
             app:layout_constraintTop_toTopOf="@+id/capturedImageSecond" />
 
+        <ja.burhanrashid52.photoeditor.PhotoEditorView
+            android:id="@+id/photoEditorView"
+            android:layout_width="72dp"
+            android:layout_height="57dp"
+
+            android:layout_marginTop="402dp"
+            app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/capturedImageSecond" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
