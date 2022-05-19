@@ -82,26 +82,6 @@ public class FirstFragment extends Fragment {
         View view = binding.getRoot();
         binding.getRoot();
 
-        button = binding.takePicture;
-        previewView = binding.previewView;
-        view_on_2 = view.findViewById(R.id.capturedImageSecond);
-        //todo understand how to change to viewBinding
-
-        cameraProviderListenableFuture = ProcessCameraProvider.getInstance(getActivity());
-
-        cameraProviderListenableFuture.addListener(() ->{
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderListenableFuture.get();
-                startCameraX(cameraProvider);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }, getExecutor());
-
-
-
-        button.setOnClickListener(view1 ->
-                capturePhoto(view1));
 
         return view;
 
@@ -131,83 +111,10 @@ public class FirstFragment extends Fragment {
     }
 
 
-    private void capturePhoto(View view) {
 
-        long timestamp = System.currentTimeMillis();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-
-
-        imageCapture.takePicture(
-                new ImageCapture.OutputFileOptions.Builder(
-                        getActivity().getContentResolver(),
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        contentValues
-                ).build(),
-                getExecutor(),
-                new ImageCapture.OnImageSavedCallback() {
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        Toast.makeText(getActivity(), "Photo has been saved successfully",
-                                Toast.LENGTH_SHORT).show();
-                        Uri mImageCaptureUri = outputFileResults.getSavedUri();
-                        try {
-                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageCaptureUri);
-
-                        } catch (IOException e) {
-                            Toast.makeText(getActivity(), "Ooops " + e.toString(),
-                                    Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        }
-
-
-                        //uri->String->fr2
-                        String pUri = mImageCaptureUri.toString();
-                        Bundle result = new Bundle();
-                        result.putString("df1", BitMapToString(bitmap));
-                        getParentFragmentManager().setFragmentResult("dataFrom1", result);
-
-                        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = pref.edit();
-
-
-                        editor.putString("photo_bit", BitMapToString(bitmap));
-
-                        editor.apply();
-                    }
-
-                    @Override
-                    public void onError(@NonNull ImageCaptureException exception) {
-                        Toast.makeText(getActivity(), "Error saving photo: " + exception.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-    }
 
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(getActivity());
-    }
-
-    private void startCameraX(ProcessCameraProvider cameraProvider) {
-
-        cameraProvider.unbindAll();
-
-        CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build();
-
-        Preview preview = new Preview.Builder().build();
-
-        preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
-        imageCapture = new ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build();
-        cameraProvider.bindToLifecycle((LifecycleOwner) getActivity(), cameraSelector, imageCapture, preview);
     }
 
 

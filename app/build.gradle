@@ -14,6 +14,8 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
     }
 
     buildTypes {
@@ -67,17 +69,17 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
 //photofilters
-    implementation 'com.github.zomato:androidphotofilters:1.0.2'
-
-
-    implementation 'com.github.Nodeer:ImageFilters:-6c5c719ea5-1'
-
-
-    implementation 'com.github.borer:ImageFilters:-6c5c719ea5-1'
-    implementation 'com.github.zomato:androidphotofilters:1.0.2'
-
-    //neuron
-    implementation 'com.github.socialsensor:sentiment-analysis:sentiment-analysis-0.1'
+//    implementation 'com.github.zomato:androidphotofilters:1.0.2'
+//
+//
+//    implementation 'com.github.Nodeer:ImageFilters:-6c5c719ea5-1'
+//
+//
+//    implementation 'com.github.borer:ImageFilters:-6c5c719ea5-1'
+//    implementation 'com.github.zomato:androidphotofilters:1.0.2'
+//
+//    //neuron
+//    implementation 'com.github.socialsensor:sentiment-analysis:sentiment-analysis-0.1'
 
 
 

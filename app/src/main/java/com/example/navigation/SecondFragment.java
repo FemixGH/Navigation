@@ -1,8 +1,11 @@
 package com.example.navigation;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,8 +26,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,12 +44,13 @@ import com.example.navigation.databinding.FragmentFragment2Binding;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 //import com.vader.sentiment.analyzer;
 
 
 public class SecondFragment extends Fragment {
-    Button search,gallery;
+    Button search,gallery, filter, camera;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
@@ -55,9 +61,11 @@ public class SecondFragment extends Fragment {
     private static final String TEXT = "text";
     public  ImageView image;
     public Uri mPhoto;
+    public Uri newUri;
 
 
     ActivityResultLauncher<String> mTakePhoto;
+    ActivityResultLauncher<Intent> activityResultLauncher;
 
     public void setImage_2(Uri uri){
         this.image.setImageURI(uri);
@@ -81,34 +89,42 @@ public class SecondFragment extends Fragment {
 
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        System.loadLibrary("NativeImageProcessor");
+        //System.loadLibrary("NativeImageProcessor");
         edit = binding.SearchTextOn2;
         image = binding.capturedImageSecond;
-        String str = pref.getString("photo_bit", null);
+        camera = binding.photoButton;
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode() == RESULT_OK && result.getData() != null){
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    image.setImageBitmap(bitmap);
+                }
+            }
+        });
 
-        //todo this crash app
-        if (str != null){
-            image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
-        }
+//        String str = pref.getString("photo_bit", null);
+
+//        todo
+//        if (str != null){
+//            image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
+//        }
 
 
 
 
         edit.setText(pref.getString(TEXT, null));
 
-        edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
+        edit.setOnFocusChangeListener((view1, hasFocus) -> {
+            if (!hasFocus) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
             }
         });
 
@@ -125,7 +141,7 @@ public class SecondFragment extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(TEXT, edit.getText().toString());
                 editor.apply();
-                editor.putString("photo_bit", str);
+//                editor.putString("photo_bit", str);
                 editor.apply();
                 Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
 
@@ -162,24 +178,34 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onActivityResult(Uri result) {
                         image.setImageURI(result);
-                        try {
-                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
-                            SharedPreferences sharedPreferences3 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                            SharedPreferences.Editor editor3 = sharedPreferences3.edit();
-
-
-                            editor3.putString("photo_bit", BitMapToString(bitmap));
-
-                            editor3.apply();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        //todo gallery sharedPref
+//                        try {
+//                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
+//                            SharedPreferences sharedPreferences3 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//                            SharedPreferences.Editor editor3 = sharedPreferences3.edit();
+//
+//
+//                            editor3.putString("photo_bit", BitMapToString(bitmap));
+//
+//                            editor3.apply();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 
                     }
                 }
 
 
         );
+
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCamera();
+            }
+        });
+
+
 
         getParentFragmentManager().setFragmentResultListener("dataFrom1", this, new FragmentResultListener() {
             @Override
@@ -193,17 +219,21 @@ public class SecondFragment extends Fragment {
                 editor2.putString("photo_bit", data);
 
                 editor2.apply();
-
-
-
-                image.setImageBitmap(RotateBitmap(StringToBitMap(data), 90));
+                image.setImageURI(Uri.parse(data));
 
             }
         });
 
 
 
+
     }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        activityResultLauncher.launch(intent);
+    }
+
 
     public String BitMapToString(Bitmap bitmap){
         ByteArrayOutputStream baos =new  ByteArrayOutputStream();
@@ -228,6 +258,12 @@ public class SecondFragment extends Fragment {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }
