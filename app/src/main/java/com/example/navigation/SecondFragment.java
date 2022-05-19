@@ -202,26 +202,6 @@ public class SecondFragment extends Fragment {
                 openCamera();
             }
         });
-
-
-
-        getParentFragmentManager().setFragmentResultListener("dataFrom1", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-
-                String data = result.getString("df1");
-
-                SharedPreferences sharedPreferences2 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-                SharedPreferences.Editor editor2 = sharedPreferences2.edit();
-
-                editor2.putString("photo_bit", data);
-
-                editor2.apply();
-                image.setImageURI(Uri.parse(data));
-
-            }
-        });
-
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

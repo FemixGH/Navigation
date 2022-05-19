@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,8 +18,11 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -51,16 +55,9 @@ import java.util.concurrent.Executor;
 public class FirstFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String KEY = "myKey";
-    Button button;
-    ImageView imageView;
-    ImageView view_on_2;
-    ActivityResultLauncher<Intent> activityResultLauncher;
-    Bitmap bitmap;
-    private ListenableFuture<ProcessCameraProvider> cameraProviderListenableFuture;
-    PreviewView previewView;
 
-    private ImageCapture imageCapture;
-
+    TextView title;
+    EditText title_edit;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -81,8 +78,6 @@ public class FirstFragment extends Fragment {
         binding = FragmentFragment1Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
         binding.getRoot();
-
-
         return view;
 
     }
@@ -99,17 +94,6 @@ public class FirstFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-
-    }
-
 
 
 
@@ -121,6 +105,13 @@ public class FirstFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        title_edit = binding.titleEditOnFiltersEditor;
+        title_edit.setOnFocusChangeListener((view1, hasFocus) -> {
+            if (!hasFocus) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+            }
+        });
     }
 
     @Override
@@ -128,28 +119,5 @@ public class FirstFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
 
-    public Bitmap StringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-    public static Bitmap RotateBitmap(Bitmap source, float angle)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
 }
