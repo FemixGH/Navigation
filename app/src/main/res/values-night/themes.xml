@@ -12,7 +12,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-
-
     </style>
+    <style name="DarkTheme" parent="Theme.Navigation">
+        <item name="colorOnBackground">@color/DarkBlightBlue</item>
+    </style>
+
 </resources>

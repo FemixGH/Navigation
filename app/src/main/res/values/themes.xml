@@ -13,4 +13,12 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/My_Grey</item>
+        <item name="colorPrimaryDark">@color/DarkBlightBlue</item>
+        <item name="colorAccent">@color/My_Grey</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>
