@@ -5,8 +5,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -16,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +47,9 @@ import com.example.navigation.databinding.FragmentFragment2Binding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -105,21 +112,17 @@ public class SecondFragment extends Fragment {
                     Bundle bundle = result.getData().getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     image.setImageBitmap(bitmap);
+                    saveToInternalStorage(bitmap);
                 }
             }
         });
 
-//        String str = pref.getString("photo_bit", null);
 
-//        todo
-//        if (str != null){
-//            image.setImageBitmap(RotateBitmap(StringToBitMap(str), 90));
-//        }
-
-
-
-
-        edit.setText(pref.getString(TEXT, null));
+        bitmap = loadImageFromStorage();
+        if(bitmap!=null){
+            image.setImageBitmap(bitmap);
+        }
+        edit.setText(pref.getString("text", null));
 
         edit.setOnFocusChangeListener((view1, hasFocus) -> {
             if (!hasFocus) {
@@ -134,18 +137,14 @@ public class SecondFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
-                //editor.putString("text", edit.getText().toString());
-                //editor.apply();
-
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(TEXT, edit.getText().toString());
+                editor.putString("text", edit.getText().toString());
                 editor.apply();
-//                editor.putString("photo_bit", str);
                 editor.apply();
                 Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
 
-                String text = sharedPreferences.getString(TEXT, null);
+                String text = sharedPreferences.getString("text", null);
 
                 testMention.setText(text);
 
@@ -178,19 +177,16 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onActivityResult(Uri result) {
                         image.setImageURI(result);
+
                         //todo gallery sharedPref
-//                        try {
-//                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
-//                            SharedPreferences sharedPreferences3 = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-//                            SharedPreferences.Editor editor3 = sharedPreferences3.edit();
-//
-//
-//                            editor3.putString("photo_bit", BitMapToString(bitmap));
-//
-//                            editor3.apply();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
+                            bitmap = RotateBitmap(bitmap,90);
+                            saveToInternalStorage(bitmap);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 }
@@ -265,5 +261,42 @@ public class SecondFragment extends Fragment {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
+
+    private String saveToInternalStorage(Bitmap bitmapImage) {
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, "photo.jpg");
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private Bitmap loadImageFromStorage() {
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, "photo.jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+
+
 
 }

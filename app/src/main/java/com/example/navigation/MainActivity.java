@@ -1,6 +1,9 @@
 package com.example.navigation;
 
+import static androidx.camera.core.CameraX.getContext;
+
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -18,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private static final String SHARED_PREFS = "sharedPrefs";
 
     private static final int PERMISSION_REQUEST_CAMERA= 87678;
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE= 56755;
@@ -73,4 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        preferences.edit().remove("text").commit();
+        super.onDestroy();
+    }
 }
