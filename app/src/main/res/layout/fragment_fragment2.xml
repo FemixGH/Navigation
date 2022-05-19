@@ -76,7 +76,7 @@
             android:id="@+id/gallery"
             android:layout_width="73dp"
             android:layout_height="56dp"
-            android:layout_marginBottom="54dp"
+            android:layout_marginBottom="4dp"
             android:background="?attr/selectableItemBackground"
             android:textColor="@color/My_Bright_Grey"
             app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
@@ -85,17 +85,23 @@
 
             app:layout_constraintEnd_toEndOf="parent"
 
-            app:layout_constraintRight_toRightOf="@id/capturedImageSecond" />
+            app:layout_constraintRight_toRightOf="@id/capturedImageSecond"
+            app:layout_constraintStart_toEndOf="@+id/capturedImageSecond" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/photo_button"
-            android:background="?attr/selectableItemBackground"
             android:layout_width="73dp"
             android:layout_height="56dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="338dp"
+
+            android:layout_marginBottom="4dp"
+
+
+            android:background="?attr/selectableItemBackground"
             app:icon="@drawable/ic_baseline_photo_camera_35"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gallery" />
+            app:layout_constraintBottom_toBottomOf="@+id/capturedImageSecond"
+            app:layout_constraintEnd_toStartOf="@+id/capturedImageSecond"
+            app:layout_constraintTop_toTopOf="@+id/capturedImageSecond" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
