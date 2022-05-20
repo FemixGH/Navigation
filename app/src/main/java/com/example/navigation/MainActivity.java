@@ -1,6 +1,6 @@
 package com.example.navigation;
 
-import static androidx.camera.core.CameraX.getContext;
+
 
 import android.Manifest;
 import android.content.SharedPreferences;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         destroyPref();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        System.loadLibrary("NativeImageProcessor");
 
         tabLayout = binding.tableLayout;
         viewPager = binding.viewpager;
