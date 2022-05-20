@@ -70,14 +70,14 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
 //photofilters
-//    implementation 'com.github.zomato:androidphotofilters:1.0.2'
-//
-//
-//    implementation 'com.github.Nodeer:ImageFilters:-6c5c719ea5-1'
-//
-//
-//    implementation 'com.github.borer:ImageFilters:-6c5c719ea5-1'
-//    implementation 'com.github.zomato:androidphotofilters:1.0.2'
+    implementation 'com.github.zomato:androidphotofilters:1.0.2'
+//    implementation 'com.github.Davidcep:PhotoEdit:1.2'
+//    implementation 'com.github.DrMint:Litrato:1.12'
+
+
+
+
+
 //
 //    //neuron
 //    implementation 'com.github.socialsensor:sentiment-analysis:sentiment-analysis-0.1'
