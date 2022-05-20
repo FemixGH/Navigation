@@ -16,6 +16,6 @@ public class WorkingWithFilters {
     Filter myFilter = new Filter();
 myFilter.addSubFilter(new BrightnessSubFilter(30));
 myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-    Bitmap outputImage = myFilter.processFilter(inputImage);
+    Bitmap outputImage = myFilter.processFilter(inputImage)
 
 }
