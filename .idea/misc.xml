@@ -13,6 +13,7 @@
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/photo_library-48px.xml" value="0.1165" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/card_view.xml" value="0.2346014492753623" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/card_view_editting_filter.xml" value="0.3182291666666667" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment1.xml" value="0.22" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment2.xml" value="0.22" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment3.xml" value="0.36666666666666664" />
@@ -33,5 +34,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.22" />
+      </ProjectState>
+    </option>
   </component>
 </project>

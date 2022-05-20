@@ -37,6 +37,8 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.navigation.databinding.FragmentFragment1Binding;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -58,6 +60,7 @@ public class FirstFragment extends Fragment {
 
     TextView title;
     EditText title_edit;
+    String[] nameOfFilters = {"Brightness","Colorful", "Contrast"};
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -112,6 +115,10 @@ public class FirstFragment extends Fragment {
                 imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
             }
         });
+        //tabLayout.setVisibility(View.GONE);
+        RecyclerView recyclerView = view.findViewById(R.id.recycleView_for_new_filter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setAdapter(new AdapterForFirstFrag(nameOfFilters));
     }
 
     @Override

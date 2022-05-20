@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerView.MyViewHolder> {
 
+
     String[] list;
 
     public AdapterRecyclerView(String[] list){
@@ -43,7 +44,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
         return list.length;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView textView;
         public MyViewHolder(@NonNull View itemView) {
