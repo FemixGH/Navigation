@@ -30,7 +30,7 @@ import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
-import bogdan.imagefilters.effect.bitmap.SimpleBitmap;
+//import bogdan.imagefilters.effect.bitmap.SimpleBitmap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,27 +102,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Filter myFilter = new Filter();
-        myFilter.addSubFilter(new BrightnessSubFilter(30));
-        myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-        Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.mipmap.kit);
-        Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-        Bitmap outputImage = myFilter.processFilter(image);
-
-        // Assume block needs to be inside a Try/Catch block.
-        String path = Environment.getExternalStorageDirectory().toString();
-
-        File file = new File(path, "LOLOLO.jpg"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
-
-
-        //outputImage.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
-
-
-        try {
-            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        Filter myFilter = new Filter();
+//        myFilter.addSubFilter(new BrightnessSubFilter(30));
+//        myFilter.addSubFilter(new ContrastSubFilter(1.1f));
+//        Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.mipmap.kit);
+//        Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
+//        Bitmap outputImage = myFilter.processFilter(image);
+//
+//        // Assume block needs to be inside a Try/Catch block.
+//        String path = Environment.getExternalStorageDirectory().toString();
+//
+//        File file = new File(path, "LOLOLO.jpg"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+//
+//
+//        //outputImage.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+//
+//
+//        try {
+//            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
 
     }

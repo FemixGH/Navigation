@@ -81,4 +81,7 @@ dependencies {
 
     //dark theme
     implementation 'androidx.appcompat:appcompat:1.6.0-alpha03'
+
+    //photo editor
+    implementation 'com.burhanrashid52:photoeditor:2.0.0'
 }

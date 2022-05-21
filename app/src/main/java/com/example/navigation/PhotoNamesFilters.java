@@ -6,6 +6,6 @@ public class PhotoNamesFilters {
     };
 
     public static int[] FitersOnSamplePhoto = new int[]{
-            R.mipmap.kit
+            R.drawable.primer
     };
 }
