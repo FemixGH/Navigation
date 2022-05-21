@@ -214,6 +214,7 @@ public class SecondFragment extends Fragment {
             public void onClick(View view) {
                 edit.setText("");
             }
+
         });
 
 
