@@ -1,5 +1,7 @@
 package com.example.navigation;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -27,6 +29,7 @@ import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,16 +69,15 @@ public class ThirdFragment extends Fragment {
                 Filter myFilter = new Filter();
                 myFilter.addSubFilter(new BrightnessSubFilter(30));
                 myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-                Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.mipmap.kit);
+                Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
                 Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
                 Bitmap outputImage = myFilter.processFilter(image);
 
 
-                try {
-                    Functions.savebitmap(outputImage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                saveToInternalFilteredStorage(outputImage);
+                //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране
+                //с словом Filtered соответственно для сохранения отфильтрованных, в чём прикол?  фотку можно сохранять только одну и она заменит прошлую,
+                //в этой папке(фильтрованных или нет), если нужно много сейвить, могу сделать, но тогда к каждой нужно будет знать путь, пока так
             }
         });
 
@@ -109,5 +111,71 @@ public class ThirdFragment extends Fragment {
 //        }
 
 
+    }
+    private String saveToInternalFilteredStorage(Bitmap bitmapImage) {
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, "photo_filtered.jpg");
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private Bitmap loadImageFilteredFromStorage() {
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, "photo_filtered.jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+    private String saveToInternalStorage(Bitmap bitmapImage) {
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, "photo.jpg");
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private Bitmap loadImageFromStorage() {
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, "photo.jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
     }
 }

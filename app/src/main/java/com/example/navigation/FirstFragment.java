@@ -55,7 +55,7 @@ public class FirstFragment extends Fragment {
 
     TextView title;
     EditText title_edit;
-    String[] nameOfFilters = {"Brightness","Colorful", "Contrast"};
+    String[] nameOfFilters = {"Brightness","Colorful", "Contrast","Exposition", "filter_5", "filter_6"};
 
 
     // TODO: Rename parameter arguments, choose names that match

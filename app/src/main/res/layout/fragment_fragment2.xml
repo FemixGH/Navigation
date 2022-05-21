@@ -8,9 +8,14 @@
     android:background="@color/My_Grey"
     android:focusableInTouchMode="true"
     tools:context=".SecondFragment">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/my_id_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -61,17 +66,17 @@
 
         <ImageView
             android:id="@+id/capturedImageSecond"
-            android:layout_width="285dp"
-            android:layout_height="398dp"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
             android:layout_centerHorizontal="true"
 
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
 
+            app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Con_2" />
-
 
         <TextView
             android:layout_width="206dp"
@@ -92,25 +97,21 @@
             android:textColor="@color/My_Bright_Grey"
             app:icon="@drawable/ic_photo_library_fill0_wght400_grad0_opsz48"
 
-            app:layout_constraintBottom_toBottomOf="@id/capturedImageSecond"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="@id/capturedImageSecond"
-            app:layout_constraintStart_toEndOf="@+id/capturedImageSecond" />
+            app:layout_constraintEnd_toEndOf="@id/capturedImageSecond"
+            app:layout_constraintTop_toBottomOf="@id/capturedImageSecond" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/photo_button"
             android:layout_width="73dp"
             android:layout_height="56dp"
-            android:layout_marginTop="338dp"
 
             android:layout_marginBottom="4dp"
-
-
             android:background="?attr/selectableItemBackground"
             app:icon="@drawable/ic_baseline_photo_camera_35"
-            app:layout_constraintBottom_toBottomOf="@+id/capturedImageSecond"
-            app:layout_constraintEnd_toStartOf="@+id/capturedImageSecond"
-            app:layout_constraintTop_toTopOf="@+id/capturedImageSecond" />
+
+            app:layout_constraintStart_toStartOf="@id/capturedImageSecond"
+            app:layout_constraintTop_toBottomOf="@id/capturedImageSecond"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ja.burhanrashid52.photoeditor.PhotoEditorView
             android:id="@+id/photoEditorView"
@@ -125,5 +126,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

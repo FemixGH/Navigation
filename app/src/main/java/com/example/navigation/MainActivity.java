@@ -38,6 +38,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.util.Properties;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = binding.viewpager;
 
         tabLayout.setupWithViewPager(viewPager);
-
-
-
+        // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and sentiment
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new SecondFragment(), "EDITING");
         vpAdapter.addFragment(new ThirdFragment(), "GALLERY OF Filters");

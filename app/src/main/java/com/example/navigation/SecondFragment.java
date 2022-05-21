@@ -3,24 +3,17 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,19 +21,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 //import com.vader.sentiment.analyzer.SentimentAnalyzer;
@@ -53,11 +46,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Objects;
 
-import ja.burhanrashid52.photoeditor.PhotoEditor;
-import ja.burhanrashid52.photoeditor.PhotoEditorView;
+//import ja.burhanrashid52.photoeditor.PhotoEditor;
+//import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
 //import com.vader.sentiment.analyzer;
 
@@ -109,9 +100,18 @@ public class SecondFragment extends Fragment {
 
         //System.loadLibrary("NativeImageProcessor");
         edit = binding.SearchTextOn2;
+        ConstraintLayout c = binding.myId1;
+        c.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
         image = binding.capturedImageSecond;
         camera = binding.photoButton;
         clear = binding.clearText;
+
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -124,7 +124,7 @@ public class SecondFragment extends Fragment {
                 }
             }
         });
-        PhotoEditorView mPhotoEditorView = binding.photoEditorView;
+        //PhotoEditorView mPhotoEditorView = binding.photoEditorView;
 //todo new library .....
 
 
@@ -190,7 +190,6 @@ public class SecondFragment extends Fragment {
                         //todo gallery sharedPref
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
-                            bitmap = RotateBitmap(bitmap,90);
                             saveToInternalStorage(bitmap);
 
                         } catch (IOException e) {
