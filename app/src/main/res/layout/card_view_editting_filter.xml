@@ -15,16 +15,40 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/card_view_filters_text"
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/card_view_filters_const_textes"
                             android:layout_width="match_parent"
                             android:layout_height="20dp"
-                            android:text="BRIGHTNESS"
-                            android:gravity="center"
-                            android:textColor="@color/design_default_color_on_primary"
-                            android:textSize="17dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/card_view_filters_seekBar">
+                                <TextView
+                                    android:id="@+id/card_view_filters_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="20dp"
+                                    android:text="BRIGHTNESS"
+                                    android:gravity="center"
+                                    android:textColor="@color/design_default_color_on_primary"
+                                    android:textSize="17dp"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:id="@+id/card_view_filter_value"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="20dp"
+                                    android:text="Value"
+                                    android:textSize="12dp"
+                                    android:layout_marginTop="3.4dp"
+                                    android:layout_marginLeft="10dp"
+                                    app:layout_constraintLeft_toRightOf="@+id/card_view_filters_text"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <SeekBar
                             android:id="@+id/card_view_filters_seekBar"
@@ -35,7 +59,7 @@
                             android:max="100"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/card_view_filters_text"/>
+                            app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

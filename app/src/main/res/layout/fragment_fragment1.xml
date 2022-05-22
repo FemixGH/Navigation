@@ -55,12 +55,292 @@
             app:layout_constraintTop_toBottomOf="@id/constraint_title"
             android:src="@drawable/primer"
             />
-        <androidx.recyclerview.widget.RecyclerView
+        <androidx.core.widget.NestedScrollView
+
             app:layout_constraintTop_toBottomOf="@id/example_photo"
-            android:id="@+id/recycleView_for_new_filter"
+            android:id="@+id/scrollView_for_new_filter"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/Add_new_filter_button"/>
+            app:layout_constraintBottom_toTopOf="@+id/Add_new_filter_button">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/const_included_filters"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/const_contrast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/const_contrast_texts"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/const_contrast_seek">
+                        <TextView
+                            android:id="@+id/const_contrast_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="Contrast"
+                            android:gravity="center"
+                            android:textColor="@color/design_default_color_on_primary"
+                            android:textSize="17dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/const_contrast_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="1.000"
+                            android:textSize="12dp"
+                            android:layout_marginTop="3.4dp"
+                            android:layout_marginLeft="10dp"
+                            app:layout_constraintLeft_toRightOf="@id/const_contrast_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <SeekBar
+                        android:id="@+id/const_contrast_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+
+                        android:progress="500"
+                        android:max="1000"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/const_saturation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/const_contrast">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/const_saturation_texts"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/const_saturation_seek">
+                        <TextView
+                            android:id="@+id/const_saturation_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="Saturation"
+                            android:gravity="center"
+                            android:textColor="@color/design_default_color_on_primary"
+                            android:textSize="17dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/const_saturation_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="1.000"
+                            android:textSize="12dp"
+                            android:layout_marginTop="3.4dp"
+                            android:layout_marginLeft="10dp"
+                            app:layout_constraintLeft_toRightOf="@id/const_saturation_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <SeekBar
+                        android:id="@+id/const_saturation_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+
+                        android:progress="500"
+                        android:max="1500"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/const_colorOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/const_saturation">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/const_colorOverlay_texts"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/const_colorOverlay_seek">
+                        <TextView
+                            android:id="@+id/const_colorOverlay_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="Color overlay"
+                            android:gravity="center"
+                            android:textColor="@color/design_default_color_on_primary"
+                            android:textSize="17dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/const_colorOverlay_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="50"
+                            android:textSize="12dp"
+                            android:layout_marginTop="3.4dp"
+                            android:layout_marginLeft="10dp"
+                            app:layout_constraintLeft_toRightOf="@id/const_colorOverlay_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <SeekBar
+                        android:id="@+id/const_colorOverlay_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+
+                        android:progress="50"
+                        android:max="100"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/const_brightness"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/const_colorOverlay">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/const_brightness_texts"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/const_brightness_seek">
+                        <TextView
+                            android:id="@+id/const_brightness_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="Brightness"
+                            android:gravity="center"
+                            android:textColor="@color/design_default_color_on_primary"
+                            android:textSize="17dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/const_brightness_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="0"
+                            android:textSize="12dp"
+                            android:layout_marginTop="3.4dp"
+                            android:layout_marginLeft="10dp"
+                            app:layout_constraintLeft_toRightOf="@id/const_brightness_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <SeekBar
+                        android:id="@+id/const_brightness_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+
+                        android:progress="0"
+                        android:max="100"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/const_vignette"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/const_brightness">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/const_vignette_texts"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/const_vignette_seek">
+                        <TextView
+                            android:id="@+id/const_vignette_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="Vignette"
+                            android:gravity="center"
+                            android:textColor="@color/design_default_color_on_primary"
+                            android:textSize="17dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/const_vignette_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:text="0"
+                            android:textSize="12dp"
+                            android:layout_marginTop="3.4dp"
+                            android:layout_marginLeft="10dp"
+                            app:layout_constraintLeft_toRightOf="@id/const_vignette_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <SeekBar
+                        android:id="@+id/const_vignette_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+
+                        android:progress="0"
+                        android:max="255"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </androidx.core.widget.NestedScrollView>
+
+
+
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/Add_new_filter_button"
             android:layout_width="match_parent"

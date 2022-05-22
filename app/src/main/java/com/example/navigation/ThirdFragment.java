@@ -43,7 +43,7 @@ import java.util.Date;
 
 public class ThirdFragment extends Fragment {
     private FragmentFragment3Binding binding;
-    //int a;
+    int a;
     Button zxc;
     String[] nameOfFilters = {"asdasd", "asdasd", "asdasd"};
     ImageView img;
@@ -66,33 +66,33 @@ public class ThirdFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters));
-        //a=0;
+        a=0;
         zxc = binding.buttonOnFiltersScreen;
         zxc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                a+=1;
-//                if(a==1) {
-//
-//                    Filter myFilter = new Filter();
-//                    myFilter.addSubFilter(new BrightnessSubFilter(30));
-//                    myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-//                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
-//                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-//                    Bitmap outputImage = myFilter.processFilter(image);
-//                    img.setImageBitmap(outputImage);
-//                }else {
-//                    Filter newFil = new Filter();
-//                    Point[] rgbKnots;
-//                    rgbKnots = new Point[3];
-//                    rgbKnots[0] = new Point(0, 0);
-//                    rgbKnots[1] = new Point(175, 139);
-//                    rgbKnots[2] = new Point(255, 255);
-//                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
-//                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-//                    Bitmap outputImage = newFil.processFilter(image);
-//                    img.setImageBitmap(outputImage);
-//                }
+                a+=1;
+                if(a==1) {
+
+                    Filter myFilter = new Filter();
+                    myFilter.addSubFilter(new BrightnessSubFilter(30));
+                    myFilter.addSubFilter(new ContrastSubFilter(1.1f));
+                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
+                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
+                    Bitmap outputImage = myFilter.processFilter(image);
+                    img.setImageBitmap(outputImage);
+                }else {
+                    Filter newFil = new Filter();
+                    Point[] rgbKnots;
+                    rgbKnots = new Point[3];
+                    rgbKnots[0] = new Point(0, 0);
+                    rgbKnots[1] = new Point(175, 139);
+                    rgbKnots[2] = new Point(255, 255);
+                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
+                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
+                    Bitmap outputImage = newFil.processFilter(image);
+                    img.setImageBitmap(outputImage);
+                }
 
 
                 Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
@@ -132,7 +132,7 @@ public class ThirdFragment extends Fragment {
 
 
     }
-    private String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
+    public String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
         //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
@@ -154,7 +154,7 @@ public class ThirdFragment extends Fragment {
         return directory.getAbsolutePath();
     }
 
-    private Bitmap loadImageFilteredFromStorage(String  name) {
+    public Bitmap loadImageFilteredFromStorage(String  name) {
         //достаёт по пути фотку из отфильтрованных
         Bitmap b = null;
         try {
@@ -167,7 +167,7 @@ public class ThirdFragment extends Fragment {
         }
         return b;
     }
-    private String saveToInternalStorage(Bitmap bitmapImage) {
+    public String saveToInternalStorage(Bitmap bitmapImage) {
         //сохраняет фотку, которая поставится в главный экран при перезапуске активности
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
@@ -189,7 +189,7 @@ public class ThirdFragment extends Fragment {
         return directory.getAbsolutePath();
     }
 
-    private Bitmap loadImageFromStorage() {
+    public Bitmap loadImageFromStorage() {
         // остает последнюю фотку, это та, которая в главном экране стоит
         Bitmap b = null;
         try {

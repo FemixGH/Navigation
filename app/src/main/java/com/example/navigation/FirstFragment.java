@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.annotation.UiThread;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -36,10 +39,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.navigation.databinding.FragmentFragment1Binding;
+import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,20 +64,25 @@ import java.util.concurrent.Executor;
 public class FirstFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String KEY = "myKey";
-
+    Bitmap bitmap;
     Button add;
+    ImageView exampleImage;
     TextView title;
     EditText title_edit;
-    String[] nameOfFilters = {"Contrast","Saturation", "ColorOverlay","Contrast", "Brightness", "Vignette"};
+    String[] nameOfFilters = {"Contrast","Saturation", "ColorOverlay", "Brightness", "Vignette"};
     ExampleOfOneFilter[] Examples = {new ExampleOfOneFilter("Contrast", 50),
                                     new ExampleOfOneFilter("Saturation", 50),
                                     new ExampleOfOneFilter("ColorOverlay", 50),
                                     new ExampleOfOneFilter("Contrast", 50),
                                     new ExampleOfOneFilter("Brightness", 50),
                                     new ExampleOfOneFilter("Vignette", 50)};
-    //Contrast, ToneCurve, Saturation, ColorOverlay, Contrast, Brightness, Vignette
+    //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
 
-
+    SeekBar seek_contrast, seek_saturation, seek_colorOverlay, seek_brightness, seek_vignette;
+    TextView text_contrast, text_saturation, text_colorOverlay, text_brightness, text_vignette;
+    TextView text_value_contrast, text_value_saturation, text_value_colorOverlay, text_value_brightness, text_value_vignette;
+    float contrast=1, colorOverlay, saturation=1;
+    int vignette = 0,brightness = 0;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -111,8 +128,12 @@ public class FirstFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                R.drawable.primer);
         title_edit = binding.titleEditOnFiltersEditor;
         add = binding.AddNewFilterButton;
+        exampleImage = binding.examplePhoto;
+        setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
         title_edit.setOnFocusChangeListener((view1, hasFocus) -> {
             if (!hasFocus) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -120,15 +141,77 @@ public class FirstFragment extends Fragment {
             }
         });
         //tabLayout.setVisibility(View.GONE);
-        RecyclerView recyclerView = view.findViewById(R.id.recycleView_for_new_filter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new AdapterForFirstFrag(nameOfFilters, Examples));
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), "Filter has been added", Toast.LENGTH_SHORT).show();
             }
             //Contrast, ToneCurve, Saturation, ColorOverlay, Contrast, Brightness, Vignette
+        });
+
+        binding.constContrastSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                float x = ((float)i)*2/1000;
+                binding.constContrastValue.setText(Float.toString(x));
+                contrast=x;
+                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        binding.constSaturationSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float x = ((float)i)*2/1000;
+                saturation = x;
+                binding.constSaturationValue.setText(Float.toString(x));
+                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        binding.constBrightnessSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                binding.constBrightnessValue.setText(Integer.toString(i));
+                brightness = i;
+                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        binding.constVignetteSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                binding.constVignetteValue.setText(Integer.toString(i));
+                vignette=i;
+                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
     }
 
@@ -137,5 +220,94 @@ public class FirstFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
+    public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1){
+        new Thread() {
+            public void run() {
+                Filter myFilter = new Filter();
+                myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
+                myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
+                myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
+                myFilter.addSubFilter(new VignetteSubFilter(getContext(),vignette_1));
 
+                Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap bit = myFilter.processFilter(image);
+                getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    exampleImage.setImageBitmap(bit);
+                }
+            });
+            }
+        }.start();
+    }
+    public String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
+        //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, name);
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    public Bitmap loadImageFilteredFromStorage(String  name) {
+        //достаёт по пути фотку из отфильтрованных
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, name);
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+    public String saveToInternalStorage(Bitmap bitmapImage) {
+        //сохраняет фотку, которая поставится в главный экран при перезапуске активности
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, "photo.jpg");
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    public Bitmap loadImageFromStorage() {
+        // остает последнюю фотку, это та, которая в главном экране стоит
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, "photo.jpg");
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
 }
