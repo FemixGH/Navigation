@@ -3,6 +3,7 @@ package com.example.navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,9 +13,11 @@ public class AdapterForFirstFrag extends RecyclerView.Adapter<AdapterForFirstFra
 
 
     String[] list;
+    ExampleOfOneFilter[] manyExamples;
 
-    public AdapterForFirstFrag(String[] list){
+    public AdapterForFirstFrag(String[] list, ExampleOfOneFilter[] manyExamples){
         this.list = list;
+        this.manyExamples = manyExamples;
     }
 
     @NonNull
@@ -27,6 +30,8 @@ public class AdapterForFirstFrag extends RecyclerView.Adapter<AdapterForFirstFra
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textView.setText(list[position]);
+        holder.example.setName(list[position]);
+
     }
 
 
@@ -38,10 +43,14 @@ public class AdapterForFirstFrag extends RecyclerView.Adapter<AdapterForFirstFra
 
     static class MyViewHolder extends RecyclerView.ViewHolder{
 
+        ExampleOfOneFilter example = new ExampleOfOneFilter("name", 50);
+
         TextView textView;
+        SeekBar seek;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.card_view_filters_text);
+            seek = itemView.findViewById(R.id.card_view_filters_seekBar);
         }
     }
 }

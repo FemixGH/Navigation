@@ -11,21 +11,23 @@
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1265" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/ic_photo_library_fill0_wght400_grad0_opsz48.xml" value="0.1265" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/photo_library-48px.xml" value="0.1165" />
-        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/card_view.xml" value="0.2346014492753623" />
-        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment1.xml" value="0.22" />
-        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment2.xml" value="0.22" />
-        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment3.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment1.xml" value="0.25" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment2.xml" value="0.25" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment3.xml" value="0.22" />
+        <entry key="..\:/Users/Student/AndroidStudioProjects/Navigation/app/src/main/res/layout/card_view.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/Theodor/Desktop/Navigation/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/Theodor/Desktop/Navigation/app/src/main/res/layout/fragment_fragment1.xml" value="0.27152988855116517" />
         <entry key="..\:/Users/Theodor/Desktop/Navigation/app/src/main/res/layout/fragment_fragment2.xml" value="0.4528985507246377" />
         <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/drawable/got.xml" value="0.495" />
-        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/drawable/ic_camera_2.xml" value="0.495" />
-        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/drawable/ic_education_feather_1_copy_2.xml" value="0.495" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/drawable/ic_baseline_photo_camera_35.xml" value="0.495" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/drawable/ic_camera.xml" value="0.4875" />
         <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment2.xml" value="0.31354166666666666" />
-        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment3.xml" value="0.3333333333333333" />
-        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/xml/pom.xml" value="0.33229166666666665" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/card_view.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment1.xml" value="0.4207427536231884" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment2.xml" value="0.5" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment3.xml" value="0.4207427536231884" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/activity_main.xml" value="0.1160081053698075" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/card_view.xml" value="0.31712962962962965" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/fragment_fragment1.xml" value="0.1160081053698075" />

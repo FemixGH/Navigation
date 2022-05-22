@@ -53,9 +53,17 @@ public class FirstFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String KEY = "myKey";
 
+    Button add;
     TextView title;
     EditText title_edit;
-    String[] nameOfFilters = {"Brightness","Colorful", "Contrast","Exposition", "filter_5", "filter_6"};
+    String[] nameOfFilters = {"Contrast","Saturation", "ColorOverlay","Contrast", "Brightness", "Vignette"};
+    ExampleOfOneFilter[] Examples = {new ExampleOfOneFilter("Contrast", 50),
+                                    new ExampleOfOneFilter("Saturation", 50),
+                                    new ExampleOfOneFilter("ColorOverlay", 50),
+                                    new ExampleOfOneFilter("Contrast", 50),
+                                    new ExampleOfOneFilter("Brightness", 50),
+                                    new ExampleOfOneFilter("Vignette", 50)};
+    //Contrast, ToneCurve, Saturation, ColorOverlay, Contrast, Brightness, Vignette
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -76,7 +84,7 @@ public class FirstFragment extends Fragment {
         binding = FragmentFragment1Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
         binding.getRoot();
-        return view;
+        return binding.getRoot();
 
     }
 
@@ -104,6 +112,7 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         title_edit = binding.titleEditOnFiltersEditor;
+        add = binding.AddNewFilterButton;
         title_edit.setOnFocusChangeListener((view1, hasFocus) -> {
             if (!hasFocus) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -113,7 +122,14 @@ public class FirstFragment extends Fragment {
         //tabLayout.setVisibility(View.GONE);
         RecyclerView recyclerView = view.findViewById(R.id.recycleView_for_new_filter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new AdapterForFirstFrag(nameOfFilters));
+        recyclerView.setAdapter(new AdapterForFirstFrag(nameOfFilters, Examples));
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Filter has been added", Toast.LENGTH_SHORT).show();
+            }
+            //Contrast, ToneCurve, Saturation, ColorOverlay, Contrast, Brightness, Vignette
+        });
     }
 
     @Override

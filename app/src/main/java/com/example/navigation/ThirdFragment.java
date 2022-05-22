@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
@@ -41,48 +43,64 @@ import java.util.Date;
 
 public class ThirdFragment extends Fragment {
     private FragmentFragment3Binding binding;
-
+    //int a;
     Button zxc;
     String[] nameOfFilters = {"asdasd", "asdasd", "asdasd"};
+    ImageView img;
+    RecyclerView recyclerView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_fragment3, container, false);
-
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters));
-
-        return view;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        zxc = binding.zxc;;
+        Toast.makeText(getActivity(), "onViewCreated", Toast.LENGTH_SHORT).show();
+        img = binding.simpleImage;
+        RecyclerView recyclerView = view.findViewById(R.id.recycleView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters));
+        //a=0;
+        zxc = binding.buttonOnFiltersScreen;
         zxc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Filter myFilter = new Filter();
-                myFilter.addSubFilter(new BrightnessSubFilter(30));
-                myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-                Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
-                Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-                Bitmap outputImage = myFilter.processFilter(image);
+//                a+=1;
+//                if(a==1) {
+//
+//                    Filter myFilter = new Filter();
+//                    myFilter.addSubFilter(new BrightnessSubFilter(30));
+//                    myFilter.addSubFilter(new ContrastSubFilter(1.1f));
+//                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
+//                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
+//                    Bitmap outputImage = myFilter.processFilter(image);
+//                    img.setImageBitmap(outputImage);
+//                }else {
+//                    Filter newFil = new Filter();
+//                    Point[] rgbKnots;
+//                    rgbKnots = new Point[3];
+//                    rgbKnots[0] = new Point(0, 0);
+//                    rgbKnots[1] = new Point(175, 139);
+//                    rgbKnots[2] = new Point(255, 255);
+//                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
+//                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
+//                    Bitmap outputImage = newFil.processFilter(image);
+//                    img.setImageBitmap(outputImage);
+//                }
 
 
-                saveToInternalFilteredStorage(outputImage);
                 Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
                 //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране
                 //с словом Filtered соответственно для сохранения отфильтрованных, в чём прикол?  фотку можно сохранять только одну и она заменит прошлую,
                 //в этой папке(фильтрованных или нет), если нужно много сейвить, могу сделать, но тогда к каждой нужно будет знать путь, пока так
             }
         });
-
 
 
         // Assume block needs to be inside a Try/Catch block.
@@ -114,11 +132,12 @@ public class ThirdFragment extends Fragment {
 
 
     }
-    private String saveToInternalFilteredStorage(Bitmap bitmapImage) {
+    private String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
+        //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath = new File(directory, "photo_filtered.jpg");
+        File mypath = new File(directory, name);
         FileOutputStream fos = null;
         try {
 
@@ -135,12 +154,13 @@ public class ThirdFragment extends Fragment {
         return directory.getAbsolutePath();
     }
 
-    private Bitmap loadImageFilteredFromStorage() {
+    private Bitmap loadImageFilteredFromStorage(String  name) {
+        //достаёт по пути фотку из отфильтрованных
         Bitmap b = null;
         try {
             ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
             File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File f = new File(path1, "photo_filtered.jpg");
+            File f = new File(path1, name);
             b = BitmapFactory.decodeStream(new FileInputStream(f));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -148,6 +168,7 @@ public class ThirdFragment extends Fragment {
         return b;
     }
     private String saveToInternalStorage(Bitmap bitmapImage) {
+        //сохраняет фотку, которая поставится в главный экран при перезапуске активности
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
@@ -169,6 +190,7 @@ public class ThirdFragment extends Fragment {
     }
 
     private Bitmap loadImageFromStorage() {
+        // остает последнюю фотку, это та, которая в главном экране стоит
         Bitmap b = null;
         try {
             ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
