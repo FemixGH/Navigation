@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -245,6 +247,8 @@ public class SecondFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 if(isCameraOpened) {
+                    Intent intent = new Intent(getActivity(), CameraActivity.class);
+                    startActivity(intent);
                     setImageVisible(binding);
                     isCameraOpened=false;
                 }else{
@@ -312,19 +316,14 @@ public class SecondFragment extends Fragment{
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
 
-        Preview preview = new Preview.Builder().build();
-
+        Preview preview = new Preview.Builder()
+                //.setTargetResolution(new Size(binding.cameraPreview.getWidth(), binding.cameraPreview.getHeight()))
+                .build();
         preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
-
         imageCapture = new ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build();
-        imageAnalysis = new ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build();
-        cameraProvider.bindToLifecycle(getActivity(),cameraSelector,preview, imageCapture, imageAnalysis);
-
-
+        cameraProvider.bindToLifecycle((LifecycleOwner) getActivity(), cameraSelector, imageCapture, preview);
     }
 
     public void setCameraVisible(FragmentFragment2Binding binding){

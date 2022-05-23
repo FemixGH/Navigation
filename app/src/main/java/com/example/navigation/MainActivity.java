@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and sentiment
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        vpAdapter.addFragment(new fragment1(), "CAMERA");
         vpAdapter.addFragment(new SecondFragment(), "EDITING");
         vpAdapter.addFragment(new ThirdFragment(), "GALLERY OF Filters");
         vpAdapter.addFragment(new FirstFragment(), "CUSTOM FILTER");

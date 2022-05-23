@@ -80,6 +80,8 @@ public class ThirdFragment extends Fragment {
                     Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
                     Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
                     Bitmap outputImage = myFilter.processFilter(image);
+                    //saveToInternalFilteredStorage(outputImage, "filter_1");
+                    //loadImageFilteredFromStorage("filter_1");
                     img.setImageBitmap(outputImage);
                 }else {
                     Filter newFil = new Filter();

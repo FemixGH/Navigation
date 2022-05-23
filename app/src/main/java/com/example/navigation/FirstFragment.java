@@ -241,12 +241,13 @@ public class FirstFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
                             exampleImage.setImageBitmap(bit);
+                            isAnyTask=false;
                         }
                     });
 
                 }
             }.start();
-            isAnyTask=false;
+
 
     }
     public boolean shouldChange(float contrast,float saturation,

@@ -12,9 +12,11 @@
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1265" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/ic_photo_library_fill0_wght400_grad0_opsz48.xml" value="0.1265" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/drawable/photo_library-48px.xml" value="0.1165" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/activity_camera.xml" value="0.25" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/card_view.xml" value="0.2346014492753623" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/card_view_editting_filter.xml" value="0.2987551867219917" />
+        <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_1.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment1.xml" value="0.25" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment2.xml" value="0.25" />
         <entry key="..\:/Users/Comp/AndroidStudioProjects/Navigation_2/app/src/main/res/layout/fragment_fragment3.xml" value="0.22" />
@@ -38,7 +40,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
