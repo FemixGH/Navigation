@@ -162,12 +162,12 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 binding.constContrastValue.setText(Float.toString(x));
                 contrast=x;
-                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
+
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}}
         });
         binding.constSaturationSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -175,19 +175,19 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 saturation = x;
                 binding.constSaturationValue.setText(Float.toString(x));
-                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
+
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}}
         });
         binding.constBrightnessSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 binding.constBrightnessValue.setText(Integer.toString(i));
                 brightness = i;
-                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
+
             }
 
             @Override
@@ -197,7 +197,7 @@ public class FirstFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
         });
         binding.constVignetteSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -206,7 +206,7 @@ public class FirstFragment extends Fragment {
                 binding.constVignetteValue.setText(Integer.toString(i));
                 vignette=i;
 
-                    if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
+
             }
 
             @Override
@@ -216,7 +216,7 @@ public class FirstFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
         });
     }

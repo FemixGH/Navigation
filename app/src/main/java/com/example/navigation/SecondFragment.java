@@ -247,8 +247,6 @@ public class SecondFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 if(isCameraOpened) {
-                    Intent intent = new Intent(getActivity(), CameraActivity.class);
-                    startActivity(intent);
                     setImageVisible(binding);
                     isCameraOpened=false;
                 }else{
