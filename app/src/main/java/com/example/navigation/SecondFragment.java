@@ -3,6 +3,7 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -122,7 +123,7 @@ public class SecondFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-
+        cameraPreview = binding.cameraPreview;
         //System.loadLibrary("NativeImageProcessor");
         edit = binding.SearchTextOn2;
         ConstraintLayout c = binding.myId1;
@@ -273,28 +274,20 @@ public class SecondFragment extends Fragment{
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void capturePhoto() {
-        File photoDir = new File("/mnt/sd");
 
-        if(!photoDir.exists()){photoDir.mkdir();}
+        long timestamp = System.currentTimeMillis();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
 
-        Date date = new Date();
-        String timestamp = String.valueOf(date.getTime());
 
-        MethodHandle mh = StringConcatFactory.makeConcat(
-                        MethodHandles.lookup(), // normally provided by the JVM
-                        "foobar", // normally provided by javac, but meaningless here
-                        // method type is normally provided by the JVM and matches the invocation
-                        MethodType.methodType(String.class, String.class, char.class, String.class))
-                .getTarget();
 
-// we can now use the handle to perform a concatenation
-// the argument types must match the MethodType specified above
-        String result = (String)mh.invokeExact(arg1, arg2, arg3);
-        String photoFilePath = photoDir.getAbsolutePath() + "/" + timestamp + ".jpg";
-
-        File photoFile = new File(photoFilePath);
         imageCapture.takePicture(
-                new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
+                new ImageCapture.OutputFileOptions.Builder(
+                        getActivity().getContentResolver(),
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        contentValues
+                ).build(),
                 getExecutor(),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
