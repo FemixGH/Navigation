@@ -34,6 +34,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.widget.NestedScrollView;
@@ -72,7 +73,8 @@ public class SecondFragment extends Fragment {
     public  ImageView image;
     public Uri mPhoto;
     public Uri newUri;
-
+    PreviewView cameraPreview;
+    boolean isCameraOpened=true;
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
@@ -90,8 +92,9 @@ public class SecondFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
-
-
+        binding.capturedImageSecond.setVisibility(View.INVISIBLE);
+        binding.cameraPreview.setVisibility(View.VISIBLE);
+        binding.takePhotoButton.setVisibility(View.VISIBLE);
 
         return binding.getRoot();
     }
@@ -215,7 +218,13 @@ public class SecondFragment extends Fragment {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openCamera();
+                if(isCameraOpened) {
+                    setImageVisible(binding);
+                    isCameraOpened=false;
+                }else{
+                    setCameraVisible(binding);
+                    isCameraOpened=true;
+                }
             }
         });
         clear.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +237,20 @@ public class SecondFragment extends Fragment {
 
 
 
+    }
+    public void setCameraVisible(FragmentFragment2Binding binding){
+        binding.capturedImageSecond.setVisibility(View.INVISIBLE);
+        binding.cameraPreview.setVisibility(View.VISIBLE);
+        binding.takePhotoButton.setVisibility(View.VISIBLE);
+        binding.photoButton.setText("Cancel");
+        binding.photoButton.setIconSize(0);
+    }
+    public void setImageVisible(FragmentFragment2Binding binding){
+        binding.capturedImageSecond.setVisibility(View.VISIBLE);
+        binding.cameraPreview.setVisibility(View.INVISIBLE);
+        binding.takePhotoButton.setVisibility(View.INVISIBLE);
+        binding.photoButton.setText("Open Camera");
+        binding.photoButton.setIconSize(24);
     }
 
     private void openCamera() {
