@@ -3,7 +3,6 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -13,8 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -24,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +32,22 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
+import com.google.common.util.concurrent.ListenableFuture;
 //import com.vader.sentiment.analyzer.SentimentAnalyzer;
 //import com.vader.sentiment.analyzer.SentimentPolarities;
 
@@ -51,8 +58,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 //import ja.burhanrashid52.photoeditor.PhotoEditor;
 //import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -60,7 +71,7 @@ import java.util.Date;
 //import com.vader.sentiment.analyzer;
 
 
-public class SecondFragment extends Fragment {
+public class SecondFragment extends Fragment{
     Button search,gallery, filter, camera, clear;
     EditText edit;
     TextView testMention;
@@ -78,8 +89,10 @@ public class SecondFragment extends Fragment {
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
-    ActivityResultLauncher<Intent> activityResultLauncher_2;
+    private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private String currentImagePath;
+    private ImageCapture imageCapture;
+    private ImageAnalysis imageAnalysis;
 
 
     public void setImage_2(Uri uri){
@@ -123,6 +136,18 @@ public class SecondFragment extends Fragment {
         image = binding.capturedImageSecond;
         camera = binding.photoButton;
         clear = binding.clearText;
+
+        cameraProviderFuture = ProcessCameraProvider.getInstance(getActivity());
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                startCameraX(cameraProvider);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, getExecutor() );
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -235,9 +260,80 @@ public class SecondFragment extends Fragment {
 
         });
 
+        binding.takePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                capturePhoto();
+            }
+        });
 
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void capturePhoto() {
+        File photoDir = new File("/mnt/sd");
+
+        if(!photoDir.exists()){photoDir.mkdir();}
+
+        Date date = new Date();
+        String timestamp = String.valueOf(date.getTime());
+
+        MethodHandle mh = StringConcatFactory.makeConcat(
+                        MethodHandles.lookup(), // normally provided by the JVM
+                        "foobar", // normally provided by javac, but meaningless here
+                        // method type is normally provided by the JVM and matches the invocation
+                        MethodType.methodType(String.class, String.class, char.class, String.class))
+                .getTarget();
+
+// we can now use the handle to perform a concatenation
+// the argument types must match the MethodType specified above
+        String result = (String)mh.invokeExact(arg1, arg2, arg3);
+        String photoFilePath = photoDir.getAbsolutePath() + "/" + timestamp + ".jpg";
+
+        File photoFile = new File(photoFilePath);
+        imageCapture.takePicture(
+                new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
+                getExecutor(),
+                new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+
+                        Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+        );
+    }
+
+    private void startCameraX(ProcessCameraProvider cameraProvider) {
+        cameraProvider.unbindAll();
+
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build();
+
+        Preview preview = new Preview.Builder().build();
+
+        preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
+
+        imageCapture = new ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .build();
+        imageAnalysis = new ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build();
+        cameraProvider.bindToLifecycle(getActivity(),cameraSelector,preview, imageCapture, imageAnalysis);
+
+
+    }
+
     public void setCameraVisible(FragmentFragment2Binding binding){
         binding.capturedImageSecond.setVisibility(View.INVISIBLE);
         binding.cameraPreview.setVisibility(View.VISIBLE);
@@ -251,6 +347,9 @@ public class SecondFragment extends Fragment {
         binding.takePhotoButton.setVisibility(View.INVISIBLE);
         binding.photoButton.setText("Open Camera");
         binding.photoButton.setIconSize(24);
+    }
+    private Executor getExecutor() {
+        return ContextCompat.getMainExecutor(getActivity());
     }
 
     private void openCamera() {
@@ -413,4 +512,6 @@ public class SecondFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
         image.setImageBitmap(bitmap);
     }
+
+
 }
