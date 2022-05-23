@@ -64,6 +64,9 @@ import java.util.concurrent.Executor;
 public class FirstFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String KEY = "myKey";
+    boolean isAnyTask = false;
+    float lastChanges;
+    long timeChanges = System.currentTimeMillis();
     Bitmap bitmap;
     Button add;
     ImageView exampleImage;
@@ -83,6 +86,8 @@ public class FirstFragment extends Fragment {
     TextView text_value_contrast, text_value_saturation, text_value_colorOverlay, text_value_brightness, text_value_vignette;
     float contrast=1, colorOverlay, saturation=1;
     int vignette = 0,brightness = 0;
+    float last_contrast=1, last_colorOverlay, last_saturation=1;
+    int last_vignette = 0,last_brightness = 0;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -157,7 +162,7 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 binding.constContrastValue.setText(Float.toString(x));
                 contrast=x;
-                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -170,7 +175,7 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 saturation = x;
                 binding.constSaturationValue.setText(Float.toString(x));
-                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -182,7 +187,7 @@ public class FirstFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 binding.constBrightnessValue.setText(Integer.toString(i));
                 brightness = i;
-                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
 
             @Override
@@ -200,7 +205,8 @@ public class FirstFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 binding.constVignetteValue.setText(Integer.toString(i));
                 vignette=i;
-                setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+
+                    if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
             }
 
             @Override
@@ -222,23 +228,55 @@ public class FirstFragment extends Fragment {
     }
     //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
     public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1){
-        new Thread() {
-            public void run() {
-                Filter myFilter = new Filter();
-                myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
-                myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
-                myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
-                myFilter.addSubFilter(new VignetteSubFilter(getContext(),vignette_1));
-
-                Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                Bitmap bit = myFilter.processFilter(image);
-                getActivity().runOnUiThread(new Runnable() {
+            new Thread() {
                 public void run() {
-                    exampleImage.setImageBitmap(bit);
+                    Filter myFilter = new Filter();
+                    myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
+                    myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
+                    myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
+                    myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
+
+                    Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    Bitmap bit = myFilter.processFilter(image);
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            exampleImage.setImageBitmap(bit);
+                        }
+                    });
+
                 }
-            });
-            }
-        }.start();
+            }.start();
+            isAnyTask=false;
+
+    }
+    public boolean shouldChange(float contrast,float saturation,
+            int vignette,int brightness){
+        if(isAnyTask==false || modulFloat(last_contrast, contrast)>0.03
+                                                        || modulFloat(last_saturation, saturation)>0.03
+                                                        || modulInt(last_brightness,brightness)>3
+                                                        || modulInt(last_vignette,vignette)>10){
+            last_brightness=brightness;
+            last_contrast=contrast;
+            last_saturation=saturation;
+            last_vignette=vignette;
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public float modulFloat(float a, float b){
+        if(a>=b){
+            return a-b;
+        }else {
+            return b-a;
+        }
+    }
+    public int modulInt(int a, int b){
+        if(a>=b){
+            return a-b;
+        }else {
+            return b-a;
+        }
     }
     public String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
         //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg

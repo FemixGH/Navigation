@@ -3,10 +3,12 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -58,7 +60,7 @@ import java.util.Date;
 
 
 public class SecondFragment extends Fragment {
-    Button search, gallery, filter, camera, clear;
+    Button search,gallery, filter, camera, clear;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
@@ -67,18 +69,18 @@ public class SecondFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs";
     private static final String SHARED_PREFS_PHOTO = "sharedPrefs_photo";
     private static final String TEXT = "text";
-    public ImageView image;
+    public  ImageView image;
     public Uri mPhoto;
     public Uri newUri;
-    String fileName = "photo";
-    String currentImagePath = null;
-    String currentPhotoPath;
 
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
+    ActivityResultLauncher<Intent> activityResultLauncher_2;
+    private String currentImagePath;
 
-    public void setImage_2(Uri uri) {
+
+    public void setImage_2(Uri uri){
         this.image.setImageURI(uri);
     }
 
@@ -90,12 +92,14 @@ public class SecondFragment extends Fragment {
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
 
 
+
         return binding.getRoot();
     }
-
-    public void setUri(Uri u) {
-        this.mPhoto = u;
+    public void setUri(Uri u){
+        this.mPhoto=u;
     }
+
+
 
 
     @Override
@@ -120,15 +124,13 @@ public class SecondFragment extends Fragment {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                    Bundle bundle = result.getData().getExtras();
-//                    Bitmap bitmap = (Bitmap) bundle.get("data");
-//                    image.setImageBitmap(bitmap);
-//                    saveToInternalStorage(bitmap);
-//                    MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, String.valueOf(System.currentTimeMillis()), "");
-                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                    ImageView imageView = binding.capturedImageSecond;
-                    imageView.setImageBitmap(bitmap);
+                if(result.getResultCode() == RESULT_OK && result.getData() != null){
+
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    image.setImageBitmap(bitmap);
+                    saveToInternalStorage(bitmap);
+                    MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, String.valueOf(System.currentTimeMillis()), "");
                 }
             }
         });
@@ -137,7 +139,7 @@ public class SecondFragment extends Fragment {
 
 
         bitmap = loadImageFromStorage();
-        if (bitmap != null) {
+        if(bitmap!=null){
             image.setImageBitmap(bitmap);
         }
         edit.setText(pref.getString("text", null));
@@ -154,7 +156,7 @@ public class SecondFragment extends Fragment {
         search = binding.button2;
         search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)  {
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("text", edit.getText().toString());
@@ -166,11 +168,14 @@ public class SecondFragment extends Fragment {
                 testMention.setText(text);
 
 
+
+
                 String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
 
 //                final SentimentPolarities sentimentPolarities =
 //                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
 //                System.out.println(sentimentPolarities);
+
 
 
             }
@@ -187,19 +192,21 @@ public class SecondFragment extends Fragment {
         });
 
         mTakePhoto = registerForActivityResult(
-                new ActivityResultContracts.GetContent(), result -> {
-                    image.setImageURI(result);
+                new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri result) {
+                        image.setImageURI(result);
 
-                    //todo gallery sharedPref
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
-                        saveToInternalStorage(bitmap);
+                        //todo gallery sharedPref
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
+                            saveToInternalStorage(bitmap);
 
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-
                 }
 
 
@@ -209,7 +216,6 @@ public class SecondFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 openCamera();
-                dispatchTakePictureIntent();
             }
         });
         clear.setOnClickListener(new View.OnClickListener() {
@@ -221,55 +227,53 @@ public class SecondFragment extends Fragment {
         });
 
 
+
     }
 
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        activityResultLauncher.launch(intent);
-
-
-    }
-//todo понять как избежать ошибки здесь
-    private File createImageFile() {
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageName = "jpg_"+timestamp+"_";
-        File storageDir = getActivity().getExternalFilesDir((Environment.DIRECTORY_PICTURES));
-        File imageFile = null;
-        try {
-            imageFile = File.createTempFile(imageName, ".jpg", storageDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        currentImagePath = imageFile.getAbsolutePath();
-        return imageFile;
+        dispatchTakePictureIntent();
+        //activityResultLauncher.launch(intent);
     }
 
-
-    public String BitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+//    private File createImageFile() {
+//        @SuppressLint("SimpleDateFormat") String timestamp = new SimpleDateFormat("K:mm a, z").format(new Date());
+//        String imageName = "jpg_"+timestamp+"_";
+//
+//        File storageDir = getActivity().getExternalFilesDir((Environment.DIRECTORY_PICTURES));
+//        File imageFile = null;
+//        try {
+//            //imageFile = File.createTempFile(imageName, ".jpg", storageDir);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        currentImagePath = imageFile.getAbsolutePath();
+//        return imageFile;
+//    }
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos =new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 
-    public Bitmap StringToBitMap(String encodedString) {
+    public Bitmap StringToBitMap(String encodedString){
         try {
-            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.getMessage();
             return null;
         }
     }
-
-    public static Bitmap RotateBitmap(Bitmap source, float angle) {
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
-
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -311,16 +315,56 @@ public class SecondFragment extends Fragment {
         return b;
     }
 
+    String currentPhotoPath;
 
+    private File createImageFile(){
+        // Create an image file name
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir_for_camera_photo", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, "photo.jpg");
+        currentPhotoPath = mypath.getAbsolutePath();
+        return mypath;
+    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (getActivity().getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            File photoFile = null;
+
+            photoFile = createImageFile();
+            Toast.makeText(getActivity(), "File created", Toast.LENGTH_SHORT).show();
+
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                File theDir = new File("imageDir_for_camera_photo");
+                if (!theDir.exists()){
+                    theDir.mkdirs();
+                }
+                Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                        "com.example.android.fileprovider",
+                        photoFile);
+                activityResultLauncher.launch(takePictureIntent);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+                Toast.makeText(getActivity(), "Camera ect", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "Cameri net", Toast.LENGTH_SHORT).show();
+        }
+
+        }else{
+            Toast.makeText(getActivity(), "getActivity().getApplicationContext().getPackageManager().hasSystemFeature(\n" +
+                    "                PackageManager.FEATURE_CAMERA)", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         getActivity().sendBroadcast(mediaScanIntent);
-
     }
-
     private void setPic() {
         // Get the dimensions of the View
         int targetW = image.getWidth();
@@ -336,7 +380,7 @@ public class SecondFragment extends Fragment {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.max(1, Math.min(photoW / targetW, photoH / targetH));
+        int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -346,23 +390,4 @@ public class SecondFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
         image.setImageBitmap(bitmap);
     }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            photoFile = createImageFile();
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(getContext(), "com.example.android.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                activityResultLauncher.launch(takePictureIntent);
-            }
-
-        }
-    }
-
-
 }
