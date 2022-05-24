@@ -74,6 +74,9 @@ public class ThirdFragment extends Fragment {
         zxc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
+                        R.drawable.primer);
+                Bitmap image = icon.copy(Bitmap.Config.ARGB_8888, true);
                 //первый простой конструктор
                 FullFilter f = new FullFilter(getActivity(),"pref_filter_f");
                 f.setBrightness(5);
@@ -86,6 +89,11 @@ public class ThirdFragment extends Fragment {
                 Filter newMyFilter = new Filter();
                 newMyFilter.addSubFilter(new ContrastSubFilter(mFilter.getContrast()));
 
+                Filter myFilter = new Filter();
+                myFilter.addSubFilter(new ColorOverlaySubFilter(120, .0f, .2f, .2f));
+                Bitmap outputImage = myFilter.processFilter(image);
+
+                binding.simpleImage.setImageBitmap(outputImage);
                 Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
                 //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране
                 //с словом Filtered соответственно для сохранения отфильтрованных, в чём прикол?  фотку можно сохранять только одну и она заменит прошлую,

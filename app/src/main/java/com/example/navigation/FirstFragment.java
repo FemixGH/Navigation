@@ -81,12 +81,12 @@ public class FirstFragment extends Fragment {
 
     //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
 
-    SeekBar seek_contrast, seek_saturation, seek_colorOverlay, seek_brightness, seek_vignette;
+    SeekBar seek_contrast, seek_saturation, seek_colorOverlay_alpha, seek_brightness, seek_vignette, seek_colorOverlay_red, seek_colorOverlay_green,seek_colorOverlay_blue;
     TextView text_contrast, text_saturation, text_colorOverlay, text_brightness, text_vignette;
     TextView text_value_contrast, text_value_saturation, text_value_colorOverlay, text_value_brightness, text_value_vignette;
     float contrast=1, colorOverlay, saturation=1;
-    int vignette = 0,brightness = 0;
-    float last_contrast=1, last_colorOverlay, last_saturation=1;
+    int vignette = 0,brightness = 0, colorOverlay_alpha;
+    float last_contrast=1, last_colorOverlay, last_saturation=1,colorOverlay_red, colorOverlay_green, colorOverlay_blue;
     int last_vignette = 0,last_brightness = 0;
     ExampleOfOneFilter[] Examples = {new ExampleOfOneFilter("Contrast", contrast),
             new ExampleOfOneFilter("Saturation", saturation),
@@ -149,29 +149,50 @@ public class FirstFragment extends Fragment {
         brightness = mFilterForExample.getBrightness();
         saturation = mFilterForExample.getSaturation();
         vignette = mFilterForExample.getVignette();
+        colorOverlay_alpha = mFilterForExample.colorOverlay_depth;
+        colorOverlay_red = mFilterForExample.colorOverlay_red;
+        colorOverlay_green = mFilterForExample.colorOverlay_green;
+        colorOverlay_blue = mFilterForExample.colorOverlay_blue;
+
+
         bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                 R.drawable.primer);
 
         seek_contrast = binding.constContrastSeek;
         seek_brightness = binding.constBrightnessSeek;
-        seek_colorOverlay = binding.constColorOverlaySeek;
         seek_saturation = binding.constSaturationSeek;
         seek_vignette = binding.constVignetteSeek;
+
+        seek_colorOverlay_alpha = binding.constColorOverlayAlphaSeek;
+        seek_colorOverlay_green = binding.constColorOverlayGreenSeek;
+        seek_colorOverlay_red = binding.constColorOverlayRedSeek;
+        seek_colorOverlay_blue = binding.constColorOverlayBlueSeek;
 
         seek_contrast.setProgress((int)(contrast*500));
         seek_saturation.setProgress((int)(saturation*500));
         seek_vignette.setProgress(vignette);
         seek_brightness.setProgress(brightness);
+        seek_colorOverlay_blue.setProgress((int)(colorOverlay_blue*1000));
+        seek_colorOverlay_green.setProgress((int)(colorOverlay_green*1000));
+        seek_colorOverlay_red.setProgress((int)(colorOverlay_red*1000));
+        seek_colorOverlay_alpha.setProgress(colorOverlay_alpha);
 
         binding.constBrightnessValue.setText(Integer.toString(brightness));
         binding.constVignetteValue.setText(Integer.toString(vignette));
         binding.constSaturationValue.setText(Float.toString(saturation));
         binding.constContrastValue.setText(Float.toString(contrast));
 
+        binding.constColorOverlayAlphaValue.setText(Integer.toString(colorOverlay_alpha));
+        binding.constColorOverlayRedValue.setText(Float.toString(colorOverlay_red));
+        binding.constColorOverlayGreenValue.setText(Float.toString(colorOverlay_green));
+        binding.constColorOverlayBlueValue.setText(Float.toString(colorOverlay_blue));
+
         title_edit = binding.titleEditOnFiltersEditor;
         add = binding.AddNewFilterButton;
         exampleImage = binding.examplePhoto;
-        setFilteredBitmap(contrast,  saturation, colorOverlay, brightness, vignette);
+        setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                mFilterForExample.colorOverlay_blue);
         title_edit.setOnFocusChangeListener((view1, hasFocus) -> {
             if (!hasFocus) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -202,7 +223,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}}
+            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                    mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                    mFilterForExample.colorOverlay_blue);}}
         });
         binding.constSaturationSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -216,7 +239,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}}
+            public void onStopTrackingTouch(SeekBar seekBar) {if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                    mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                    mFilterForExample.colorOverlay_blue);}}
         });
         binding.constBrightnessSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -234,8 +259,9 @@ public class FirstFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
-            }
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}            }
         });
         binding.constVignetteSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -253,7 +279,93 @@ public class FirstFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette);}
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}            }
+        });
+
+        binding.constColorOverlayAlphaSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                colorOverlay_alpha = i;
+                mFilterForExample.setColorOverlay_depth(i);
+                colorOverlay_alpha = i;
+                binding.constColorOverlayAlphaValue.setText(Integer.toString(i));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}
+            }
+        });
+        binding.constColorOverlayRedSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float x = ((float)i)/1000;
+                mFilterForExample.setColorOverlay_red(x);
+                colorOverlay_red = x;
+                binding.constColorOverlayRedValue.setText(Float.toString(x));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}
+            }
+        });
+        binding.constColorOverlayGreenSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float x = ((float)i)/1000;
+                mFilterForExample.setColorOverlay_green(x);
+                colorOverlay_green = x;
+                binding.constColorOverlayGreenValue.setText(Float.toString(x));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}
+            }
+        });
+        binding.constColorOverlayBlueSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float x = ((float)i)/1000;
+                mFilterForExample.setColorOverlay_blue(x);
+                colorOverlay_blue = x;
+                binding.constColorOverlayBlueValue.setText(Float.toString(x));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!isAnyTask) {isAnyTask = true;setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                        mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                        mFilterForExample.colorOverlay_blue);}
             }
         });
     }
@@ -265,7 +377,8 @@ public class FirstFragment extends Fragment {
         binding = null;
     }
     //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
-    public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1){
+    public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1,
+                                  int alpha, float red, float green, float blue){
             new Thread() {
                 public void run() {
                     Filter myFilter = new Filter();
@@ -273,6 +386,7 @@ public class FirstFragment extends Fragment {
                     myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
                     myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
                     myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
+                    myFilter.addSubFilter(new ColorOverlaySubFilter(alpha,red,green,blue));
 
                     Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                     Bitmap bit = myFilter.processFilter(image);
