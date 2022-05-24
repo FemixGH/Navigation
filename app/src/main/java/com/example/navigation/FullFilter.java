@@ -3,12 +3,15 @@ package com.example.navigation;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.zomato.photofilters.geometry.Point;
 
-public class FullFilter {
+public class FullFilter<mContext> {
     Activity a;
+
     String nameFilter;
     Point[] rgbKnots = new Point[3];
 
@@ -36,8 +39,18 @@ public class FullFilter {
         this.a=a;
     }
 
+    public FullFilter(Activity a, String nameFilter, String MY_PREFS_NAME, float contrast, float saturation, int brightness, int vignette) {
+        this.a = a;
+        this.nameFilter = nameFilter;
+        this.MY_PREFS_NAME = MY_PREFS_NAME;
+        this.contrast = contrast;
+        this.saturation = saturation;
+        this.brightness = brightness;
+        this.vignette = vignette;
+    }
+
     public FullFilter(Activity a,
-                        String name,
+                      String name,
                       String pref,
                       float contrast,
                       float saturation,
@@ -212,7 +225,7 @@ public class FullFilter {
 //
 //        int brightness;
 //        int vignette;
-    public void saveFilter(FullFilter f){
+    public void saveFilter(FullFilter f, Activity a){
 
         SharedPreferences.Editor editor = a.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("name", getNameFilter())
@@ -233,8 +246,7 @@ public class FullFilter {
         editor.apply();
     }
 
-    public void getFilter(String shared){
-        SharedPreferences prefs = a.getSharedPreferences(shared, MODE_PRIVATE);
+    public void getFilter(SharedPreferences prefs, String shared){
 
         this.contrast = prefs.getFloat("contrast", 0);
         this.saturation = prefs.getFloat("saturation", 0);

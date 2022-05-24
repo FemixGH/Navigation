@@ -2,6 +2,7 @@ package com.example.navigation;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -62,6 +63,7 @@ public class ThirdFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences shared = getActivity().getSharedPreferences("pref_filter_f", Context.MODE_PRIVATE);
         Toast.makeText(getActivity(), "onViewCreated", Toast.LENGTH_SHORT).show();
         img = binding.simpleImage;
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
@@ -73,10 +75,11 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //первый простой конструктор
-                FullFilter f = new FullFilter(getActivity(),"filter_f");
+                FullFilter f = new FullFilter(getActivity(),"pref_filter_f");
                 f.setBrightness(5);
                 f.setContrast(35.5f);
-                f.saveFilter(f);
+                f.saveFilter(f, getActivity());
+                f.getFilter(shared,"pref_filter_f");
                 //пример с вторым конструктором, который со всеми фильтрами из zomato
                 FullFilter mFilter = new FullFilter(getActivity(),"mFilter", "shared_preferences_filter_mFilter", 1.2f,1.3f,100, .2f, .2f, .0f,
                         0, 0,175, 139,255, 255,30,100);

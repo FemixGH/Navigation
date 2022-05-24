@@ -63,6 +63,9 @@ import java.util.concurrent.Executor;
 
 
 public class FirstFragment extends Fragment {
+    FullFilter mFilterForExample = new FullFilter(getActivity(), "filter_on_example",
+            "shared_preferences_for_example",
+            1, 1, 0,0);
     private static final String SHARED_PREFS = "sharedPrefs_photo";
     private static final String SHARED_FILTERS = "sharedPrefs_filtrs";
     private static final String KEY = "myKey";
@@ -108,6 +111,9 @@ public class FirstFragment extends Fragment {
         binding = FragmentFragment1Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
         binding.getRoot();
+        SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
+        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+
         return binding.getRoot();
 
     }
@@ -135,8 +141,33 @@ public class FirstFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
+
+        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+
+        contrast = mFilterForExample.getContrast();
+        brightness = mFilterForExample.getBrightness();
+        saturation = mFilterForExample.getSaturation();
+        vignette = mFilterForExample.getVignette();
         bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                 R.drawable.primer);
+
+        seek_contrast = binding.constContrastSeek;
+        seek_brightness = binding.constBrightnessSeek;
+        seek_colorOverlay = binding.constColorOverlaySeek;
+        seek_saturation = binding.constSaturationSeek;
+        seek_vignette = binding.constVignetteSeek;
+
+        seek_contrast.setProgress((int)(contrast*500));
+        seek_saturation.setProgress((int)(saturation*500));
+        seek_vignette.setProgress(vignette);
+        seek_brightness.setProgress(brightness);
+
+        binding.constBrightnessValue.setText(Integer.toString(brightness));
+        binding.constVignetteValue.setText(Integer.toString(vignette));
+        binding.constSaturationValue.setText(Float.toString(saturation));
+        binding.constContrastValue.setText(Float.toString(contrast));
+
         title_edit = binding.titleEditOnFiltersEditor;
         add = binding.AddNewFilterButton;
         exampleImage = binding.examplePhoto;
@@ -166,7 +197,7 @@ public class FirstFragment extends Fragment {
                 binding.constContrastValue.setText(Float.toString(x));
                 contrast=x;
                 Examples[0].setValueOfFilter(x);
-
+                mFilterForExample.setContrast(x);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -180,7 +211,7 @@ public class FirstFragment extends Fragment {
                 saturation = x;
                 binding.constSaturationValue.setText(Float.toString(x));
                 Examples[1].setValueOfFilter(x);
-
+                mFilterForExample.setSaturation(x);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -193,6 +224,7 @@ public class FirstFragment extends Fragment {
                 binding.constBrightnessValue.setText(Integer.toString(i));
                 brightness = i;
                 Examples[2].setValueOfFilter(i);
+                mFilterForExample.setBrightness(i);
             }
 
             @Override
@@ -211,7 +243,7 @@ public class FirstFragment extends Fragment {
                 binding.constVignetteValue.setText(Integer.toString(i));
                 vignette=i;
                 Examples[3].setValueOfFilter(i);
-
+                mFilterForExample.setVignette(i);
             }
 
             @Override
@@ -228,6 +260,7 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+
         super.onDestroyView();
         binding = null;
     }
@@ -252,8 +285,12 @@ public class FirstFragment extends Fragment {
 
                 }
             }.start();
+            mFilterForExample.setContrast(contrast_1);
+            mFilterForExample.setSaturation(saturation_1);
+            mFilterForExample.setBrightness(brightness_1);
+            mFilterForExample.setVignette(vignette_1);
 
-
+            mFilterForExample.saveFilter(mFilterForExample, getActivity());
     }
     public boolean shouldChange(float contrast,float saturation,
             int vignette,int brightness){

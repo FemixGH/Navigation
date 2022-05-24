@@ -75,7 +75,8 @@ import java.util.concurrent.Executor;
 
 
 public class SecondFragment extends Fragment{
-    Button search,gallery, filter, camera, clear;
+    Button search,gallery, back, camera, clear, gallery_camera, open_camera,take_photo_button
+            ,rotate_button;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
@@ -88,7 +89,7 @@ public class SecondFragment extends Fragment{
     public Uri mPhoto;
     public Uri newUri;
     PreviewView cameraPreview;
-    boolean isCameraOpened=true;
+    boolean isCameraOpened=false;
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
@@ -102,15 +103,13 @@ public class SecondFragment extends Fragment{
         this.image.setImageURI(uri);
     }
 
-    private FragmentFragment2Binding binding;
+    private  FragmentFragment2Binding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
-        binding.capturedImageSecond.setVisibility(View.INVISIBLE);
-        binding.cameraPreview.setVisibility(View.VISIBLE);
-        binding.takePhotoButton.setVisibility(View.VISIBLE);
+        setImageVisible(binding);
 
         return binding.getRoot();
     }
@@ -127,7 +126,11 @@ public class SecondFragment extends Fragment{
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         cameraPreview = binding.cameraPreview;
         //System.loadLibrary("NativeImageProcessor");
+        gallery_camera = binding.galleryWithCameraView;
+        open_camera = binding.openCamera;
         edit = binding.SearchTextOn2;
+        take_photo_button = binding.takePhotoButton;
+        rotate_button = binding.rotateButton;
         ConstraintLayout c = binding.myId1;
         c.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +140,7 @@ public class SecondFragment extends Fragment{
             }
         });
         image = binding.capturedImageSecond;
-        camera = binding.photoButton;
+        back = binding.backToImage;
         clear = binding.clearText;
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(getActivity());
@@ -169,9 +172,9 @@ public class SecondFragment extends Fragment{
 //todo new library .....
 
 
+
         bitmap = loadImageFromStorage();
         if(bitmap!=null){
-            bitmap = RotateBitmap(bitmap, 90);
             image.setImageBitmap(bitmap);
         }
         edit.setText(pref.getString("text", null));
@@ -213,9 +216,24 @@ public class SecondFragment extends Fragment{
             }
         });
 
-
+        rotate_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bitmap = loadImageFromStorage();
+                bitmap = RotateBitmap(bitmap, 90);
+                image.setImageBitmap(bitmap);
+                saveToInternalStorage(bitmap);
+            }
+        });
         gallery = binding.gallery;
         gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTakePhoto.launch("image/*");
+
+            }
+        });
+        gallery_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mTakePhoto.launch("image/*");
@@ -232,12 +250,15 @@ public class SecondFragment extends Fragment{
                         //todo gallery sharedPref
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
+                            bitmap = RotateBitmap(bitmap, 90);
+
                             saveToInternalStorage(bitmap);
                             Toast.makeText(getActivity(), "gallery saved", Toast.LENGTH_SHORT).show();
 
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        setImageVisible(binding);
 
                     }
                 }
@@ -245,7 +266,20 @@ public class SecondFragment extends Fragment{
 
         );
 
-        camera.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
+                if(isCameraOpened) {
+                    setImageVisible(binding);
+                    isCameraOpened=false;
+                }else{
+                    setCameraVisible(binding);
+                    isCameraOpened=true;
+                }
+            }
+        });
+        open_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isCameraOpened) {
@@ -303,8 +337,9 @@ public class SecondFragment extends Fragment{
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        saveToInternalStorage(bitmap);
+
                         bitmap = RotateBitmap(bitmap, 90);
+                        saveToInternalStorage(bitmap);
                         image.setImageBitmap(bitmap);
                     }
 
@@ -336,18 +371,36 @@ public class SecondFragment extends Fragment{
     }
 
     public void setCameraVisible(FragmentFragment2Binding binding){
+        binding.scroll.setVisibility(View.INVISIBLE);
+        binding.constraintWithPreview.setVisibility(View.VISIBLE);
+        binding.Con2.setVisibility(View.INVISIBLE);
+        binding.galleryWithCameraView.setVisibility(View.VISIBLE);
         binding.capturedImageSecond.setVisibility(View.INVISIBLE);
         binding.cameraPreview.setVisibility(View.VISIBLE);
         binding.takePhotoButton.setVisibility(View.VISIBLE);
-        binding.photoButton.setText("Cancel");
-        binding.photoButton.setIconSize(0);
+        //binding.backToImage.setVisibility(View.VISIBLE);
+        binding.gallery.setVisibility(View.INVISIBLE);
+
+        //binding.openCamera.setVisibility(View.INVISIBLE);
+        take_photo_button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                capturePhoto();
+            }
+        });
     }
     public void setImageVisible(FragmentFragment2Binding binding){
+        binding.scroll.setVisibility(View.VISIBLE);
+        binding.constraintWithPreview.setVisibility(View.INVISIBLE);
+        binding.Con2.setVisibility(View.VISIBLE);
         binding.capturedImageSecond.setVisibility(View.VISIBLE);
         binding.cameraPreview.setVisibility(View.INVISIBLE);
         binding.takePhotoButton.setVisibility(View.INVISIBLE);
-        binding.photoButton.setText("Open Camera");
-        binding.photoButton.setIconSize(24);
+        //binding.backToImage.setVisibility(View.INVISIBLE);
+        binding.gallery.setVisibility(View.VISIBLE);
+        binding.galleryWithCameraView.setVisibility(View.INVISIBLE);
+
     }
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(getActivity());
@@ -409,6 +462,7 @@ public class SecondFragment extends Fragment{
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
         File mypath = new File(directory, "photo.jpg");
+        String path = mypath.getAbsolutePath();
         FileOutputStream fos = null;
         try {
 
