@@ -49,7 +49,8 @@ public class ThirdFragment extends Fragment {
     private FragmentFragment3Binding binding;
     int a;
     Button zxc;
-    String[] nameOfFilters = {"asdasd", "asdasd", "asdasd"};
+    ArrayList<String > nameOfFilters = new ArrayList<String>();
+    ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
     ImageView img;
     RecyclerView recyclerView;
     Button toNewFragment;
@@ -60,6 +61,16 @@ public class ThirdFragment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_fragment3, container, false);
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
 
+        nameOfFilters.add("filter_1");
+        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
+                        R.drawable.primer));
+        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer));
+        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer));
+        nameOfFilters.add("filter_2");
+        nameOfFilters.add("filter_3");
+
         return binding.getRoot();
     }
 
@@ -68,51 +79,52 @@ public class ThirdFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences shared = getActivity().getSharedPreferences("pref_filter_f", Context.MODE_PRIVATE);
         Toast.makeText(getActivity(), "onViewCreated", Toast.LENGTH_SHORT).show();
-        img = binding.simpleImage;
+
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters));
+        recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters, photos));
         a=0;
-        zxc = binding.buttonOnFiltersScreen;
-        zxc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
-                        R.drawable.primer);
-                Bitmap image = icon.copy(Bitmap.Config.ARGB_8888, true);
-                //первый простой конструктор
-                FullFilter f = new FullFilter(getActivity(),"pref_filter_f");
-                f.setBrightness(5);
-                f.setContrast(35.5f);
-                f.saveFilter(f, getActivity());
-                f.getFilter(shared,"pref_filter_f");
-                //пример с вторым конструктором, который со всеми фильтрами из zomato
-                FullFilter mFilter = new FullFilter(getActivity(),"mFilter", "shared_preferences_filter_mFilter", 1.2f,1.3f,100, .2f, .2f, .0f,
-                        0, 0,175, 139,255, 255,30,100);
-                Filter newMyFilter = new Filter();
-                newMyFilter.addSubFilter(new ContrastSubFilter(mFilter.getContrast()));
+//todo не удалять
 
-                Filter myFilter = new Filter();
-                myFilter.addSubFilter(new ColorOverlaySubFilter(120, .0f, .2f, .2f));
-                Bitmap outputImage = myFilter.processFilter(image);
-
-                binding.simpleImage.setImageBitmap(outputImage);
-                Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
-                //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране
-                //с словом Filtered соответственно для сохранения отфильтрованных, в чём прикол?  фотку можно сохранять только одну и она заменит прошлую,
-                //в этой папке(фильтрованных или нет), если нужно много сейвить, могу сделать, но тогда к каждой нужно будет знать путь, пока так
-            }
-        });
+//        zxc.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
+//                        R.drawable.primer);
+//                Bitmap image = icon.copy(Bitmap.Config.ARGB_8888, true);
+//                //первый простой конструктор
+//                FullFilter f = new FullFilter(getActivity(),"pref_filter_f");
+//                f.setBrightness(5);
+//                f.setContrast(35.5f);
+//                f.saveFilter(f, getActivity());
+//                f.getFilter(shared,"pref_filter_f");
+//                //пример с вторым конструктором, который со всеми фильтрами из zomato
+//                FullFilter mFilter = new FullFilter(getActivity(),"mFilter", "shared_preferences_filter_mFilter", 1.2f,1.3f,100, .2f, .2f, .0f,
+//                        0, 0,175, 139,255, 255,30,100);
+//                Filter newMyFilter = new Filter();
+//                newMyFilter.addSubFilter(new ContrastSubFilter(mFilter.getContrast()));
+//
+//                Filter myFilter = new Filter();
+//                myFilter.addSubFilter(new ColorOverlaySubFilter(120, .0f, .2f, .2f));
+//                Bitmap outputImage = myFilter.processFilter(image);
+//
+//
+//                Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
+//                //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране
+//                //с словом Filtered соответственно для сохранения отфильтрованных, в чём прикол?  фотку можно сохранять только одну и она заменит прошлую,
+//                //в этой папке(фильтрованных или нет), если нужно много сейвить, могу сделать, но тогда к каждой нужно будет знать путь, пока так
+//            }
+//        });
 
         toNewFragment = binding.openFragment;
         toNewFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                on_second_fragment nextFrag= new on_second_fragment();
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.openNewFragment, nextFrag, "findThisFragment")
-//                        .addToBackStack(null)
-//                        .commit();
+                on_second_fragment nextFrag= new on_second_fragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.openNewFragment, nextFrag, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
 
                 replaceFragment(new on_second_fragment());
 

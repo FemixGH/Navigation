@@ -111,8 +111,26 @@ public class FirstFragment extends Fragment {
         binding = FragmentFragment1Binding.inflate(inflater, container, false);
         View view = binding.getRoot();
         binding.getRoot();
+        exampleImage = binding.examplePhoto;
         SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+
+        contrast = mFilterForExample.getContrast();
+        brightness = mFilterForExample.getBrightness();
+        saturation = mFilterForExample.getSaturation();
+        vignette = mFilterForExample.getVignette();
+        colorOverlay_alpha = mFilterForExample.colorOverlay_depth;
+        colorOverlay_red = mFilterForExample.colorOverlay_red;
+        colorOverlay_green = mFilterForExample.colorOverlay_green;
+        colorOverlay_blue = mFilterForExample.colorOverlay_blue;
+        bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                R.drawable.primer);
+
+        setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
+                mFilterForExample.getColorOverlay_depth(), mFilterForExample.getColorOverlay_red(), mFilterForExample.getColorOverlay_green(),
+                mFilterForExample.colorOverlay_blue);
+
 
         return binding.getRoot();
 
