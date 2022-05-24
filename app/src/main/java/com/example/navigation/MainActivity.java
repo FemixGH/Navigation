@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -21,7 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.navigation.databinding.ActivityMainBinding;
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         vpAdapter.addFragment(new SecondFragment(), "EDITING");
         vpAdapter.addFragment(new ThirdFragment(), "GALLERY OF Filters");
+
         vpAdapter.addFragment(new FirstFragment(), "CUSTOM FILTER");
 
 
@@ -134,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("text", "").commit();
         Log.d("MY_TAG", "cleared");
+    }
+    public void replaceFragment(Fragment fragment) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.openNewFragment,fragment);
+        fragmentTransaction.commit();
+
     }
 
 
