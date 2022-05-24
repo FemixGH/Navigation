@@ -116,20 +116,6 @@ public class ThirdFragment extends Fragment {
 //            }
 //        });
 
-        toNewFragment = binding.openFragment;
-        toNewFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                on_second_fragment nextFrag= new on_second_fragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.openNewFragment, nextFrag, "findThisFragment")
-                        .addToBackStack(null)
-                        .commit();
-
-                replaceFragment(new on_second_fragment());
-
-            }
-        });
 
 
 

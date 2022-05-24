@@ -310,6 +310,7 @@ public class SecondFragment extends Fragment{
 
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void capturePhoto() {
 
@@ -371,6 +372,7 @@ public class SecondFragment extends Fragment{
     }
 
     public void setCameraVisible(FragmentFragment2Binding binding){
+
         binding.scroll.setVisibility(View.INVISIBLE);
         binding.constraintWithPreview.setVisibility(View.VISIBLE);
         binding.Con2.setVisibility(View.INVISIBLE);
@@ -390,7 +392,10 @@ public class SecondFragment extends Fragment{
             }
         });
     }
+
+
     public void setImageVisible(FragmentFragment2Binding binding){
+
         binding.scroll.setVisibility(View.VISIBLE);
         binding.constraintWithPreview.setVisibility(View.INVISIBLE);
         binding.Con2.setVisibility(View.VISIBLE);
@@ -426,6 +431,7 @@ public class SecondFragment extends Fragment{
 //        currentImagePath = imageFile.getAbsolutePath();
 //        return imageFile;
 //    }
+
     public String BitMapToString(Bitmap bitmap){
         ByteArrayOutputStream baos =new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);

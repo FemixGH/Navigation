@@ -4,6 +4,7 @@ import static androidx.camera.core.CameraX.getContext;
 
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,8 +40,9 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     @NonNull
     @Override
     public AdapterRecyclerView.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new AdapterRecyclerView.MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.
-                card_view, parent, false));
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_view, parent, false);
+        return new MyViewHolder(view).linkAdapter(this);
     }
 
     @Override
@@ -57,6 +60,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder{
+        private AdapterRecyclerView adapterRecyclerView;
 
         TextView textView;
         Button menu;
@@ -77,8 +81,39 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
         private void ShowPopupMenu(View view){
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.inflate(R.menu.popup_menu);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()){
+                        case R.id.action_popup_delete:
+                            adapterRecyclerView.photos.remove(getAbsoluteAdapterPosition());
+                            adapterRecyclerView.filters.remove(getAbsoluteAdapterPosition());
+                            adapterRecyclerView.notifyItemRemoved(getAbsoluteAdapterPosition());
+                            return true;
+                            case R.id.action_popup_info:
+
+                                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                                on_second_fragment nextFrag= new on_second_fragment();
+                                String backStateName = nextFrag.getClass().getName();
+                                activity.getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.openNewFragment, nextFrag)
+                                        .addToBackStack(backStateName)
+                                        .commit();
+
+
+                                return true;
+                        default:
+                            return false;
+                    }
+
+                }
+            });
             popupMenu.show();
 
+        }
+        public  MyViewHolder linkAdapter(AdapterRecyclerView adapter){
+            this.adapterRecyclerView=adapter;
+            return this;
         }
 
     }
