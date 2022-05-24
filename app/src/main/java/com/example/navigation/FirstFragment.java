@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.navigation.databinding.FragmentFragment1Binding;
+import com.zomato.photofilters.geometry.Point;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
@@ -63,6 +64,7 @@ import java.util.concurrent.Executor;
 
 public class FirstFragment extends Fragment {
     private static final String SHARED_PREFS = "sharedPrefs_photo";
+    private static final String SHARED_FILTERS = "sharedPrefs_filtrs";
     private static final String KEY = "myKey";
     boolean isAnyTask = false;
     float lastChanges;
@@ -73,12 +75,7 @@ public class FirstFragment extends Fragment {
     TextView title;
     EditText title_edit;
     String[] nameOfFilters = {"Contrast","Saturation", "ColorOverlay", "Brightness", "Vignette"};
-    ExampleOfOneFilter[] Examples = {new ExampleOfOneFilter("Contrast", 50),
-                                    new ExampleOfOneFilter("Saturation", 50),
-                                    new ExampleOfOneFilter("ColorOverlay", 50),
-                                    new ExampleOfOneFilter("Contrast", 50),
-                                    new ExampleOfOneFilter("Brightness", 50),
-                                    new ExampleOfOneFilter("Vignette", 50)};
+
     //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
 
     SeekBar seek_contrast, seek_saturation, seek_colorOverlay, seek_brightness, seek_vignette;
@@ -88,6 +85,11 @@ public class FirstFragment extends Fragment {
     int vignette = 0,brightness = 0;
     float last_contrast=1, last_colorOverlay, last_saturation=1;
     int last_vignette = 0,last_brightness = 0;
+    ExampleOfOneFilter[] Examples = {new ExampleOfOneFilter("Contrast", contrast),
+            new ExampleOfOneFilter("Saturation", saturation),
+            new ExampleOfOneFilter("ColorOverlay", colorOverlay),
+            new ExampleOfOneFilter("Brightness", brightness),
+            new ExampleOfOneFilter("Vignette", vignette)};
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -147,6 +149,7 @@ public class FirstFragment extends Fragment {
         });
         //tabLayout.setVisibility(View.GONE);
 
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,6 +165,7 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 binding.constContrastValue.setText(Float.toString(x));
                 contrast=x;
+                Examples[0].setValueOfFilter(x);
 
             }
             @Override
@@ -175,6 +179,7 @@ public class FirstFragment extends Fragment {
                 float x = ((float)i)*2/1000;
                 saturation = x;
                 binding.constSaturationValue.setText(Float.toString(x));
+                Examples[1].setValueOfFilter(x);
 
             }
             @Override
@@ -187,7 +192,7 @@ public class FirstFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 binding.constBrightnessValue.setText(Integer.toString(i));
                 brightness = i;
-
+                Examples[2].setValueOfFilter(i);
             }
 
             @Override
@@ -205,7 +210,7 @@ public class FirstFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 binding.constVignetteValue.setText(Integer.toString(i));
                 vignette=i;
-
+                Examples[3].setValueOfFilter(i);
 
             }
 
@@ -349,4 +354,6 @@ public class FirstFragment extends Fragment {
         }
         return b;
     }
+
+
 }

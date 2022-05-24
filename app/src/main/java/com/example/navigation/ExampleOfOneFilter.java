@@ -1,13 +1,26 @@
 package com.example.navigation;
 
+import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Map;
+import java.util.Set;
+
 public class ExampleOfOneFilter {
 
     private String name;
-    private int valueOfFilter;
+    private int valueOfFilterInt;
+    private float valueOfFilterFloat;
 
     public ExampleOfOneFilter(String name, int valueOfFilter) {
         this.name = name;
-        this.valueOfFilter = valueOfFilter;
+        this.valueOfFilterInt = valueOfFilter;
+    }
+    public ExampleOfOneFilter(String name, float valueOfFilter) {
+        this.name = name;
+        this.valueOfFilterFloat = valueOfFilter;
     }
 
     public String getName() {
@@ -18,11 +31,19 @@ public class ExampleOfOneFilter {
         this.name = name;
     }
 
-    public int getValueOfFilter() {
-        return valueOfFilter;
+    public int getValueOfFilterInt() {
+        return valueOfFilterInt;
+    }
+    public float getValueOfFilterFloat() {
+        return valueOfFilterFloat;
     }
 
     public void setValueOfFilter(int valueOfFilter) {
-        this.valueOfFilter = valueOfFilter;
+        this.valueOfFilterInt = valueOfFilter;
     }
+    public void setValueOfFilter(float valueOfFilter) {
+        this.valueOfFilterFloat = valueOfFilter;
+    }
+
+
 }

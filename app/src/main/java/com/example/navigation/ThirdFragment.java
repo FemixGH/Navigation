@@ -28,6 +28,7 @@ import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.example.navigation.databinding.FragmentFragment3Binding;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
 import java.io.ByteArrayOutputStream;
@@ -71,31 +72,16 @@ public class ThirdFragment extends Fragment {
         zxc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a+=1;
-                if(a==1) {
-
-                    Filter myFilter = new Filter();
-                    myFilter.addSubFilter(new BrightnessSubFilter(30));
-                    myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
-                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-                    Bitmap outputImage = myFilter.processFilter(image);
-                    //saveToInternalFilteredStorage(outputImage, "filter_1");
-                    //loadImageFilteredFromStorage("filter_1");
-                    img.setImageBitmap(outputImage);
-                }else {
-                    Filter newFil = new Filter();
-                    Point[] rgbKnots;
-                    rgbKnots = new Point[3];
-                    rgbKnots[0] = new Point(0, 0);
-                    rgbKnots[1] = new Point(175, 139);
-                    rgbKnots[2] = new Point(255, 255);
-                    Bitmap bitmapPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.primer);
-                    Bitmap image = bitmapPhoto.copy(Bitmap.Config.ARGB_8888, true);
-                    Bitmap outputImage = newFil.processFilter(image);
-                    img.setImageBitmap(outputImage);
-                }
-
+                //первый простой конструктор
+                FullFilter f = new FullFilter(getActivity(),"filter_f");
+                f.setBrightness(5);
+                f.setContrast(35.5f);
+                f.saveFilter(f);
+                //пример с вторым конструктором, который со всеми фильтрами из zomato
+                FullFilter mFilter = new FullFilter(getActivity(),"mFilter", "shared_preferences_filter_mFilter", 1.2f,1.3f,100, .2f, .2f, .0f,
+                        0, 0,175, 139,255, 255,30,100);
+                Filter newMyFilter = new Filter();
+                newMyFilter.addSubFilter(new ContrastSubFilter(mFilter.getContrast()));
 
                 Toast.makeText(getActivity(), "Saved Bitmap", Toast.LENGTH_SHORT).show();
                 //я добавил сюда 4 метода, по названию понятно, что они делают, без слова Filtered будут сохранять вместо картинки на главном экране

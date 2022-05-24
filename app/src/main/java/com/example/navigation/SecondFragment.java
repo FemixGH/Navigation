@@ -171,6 +171,7 @@ public class SecondFragment extends Fragment{
 
         bitmap = loadImageFromStorage();
         if(bitmap!=null){
+            bitmap = RotateBitmap(bitmap, 90);
             image.setImageBitmap(bitmap);
         }
         edit.setText(pref.getString("text", null));
@@ -232,6 +233,7 @@ public class SecondFragment extends Fragment{
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
                             saveToInternalStorage(bitmap);
+                            Toast.makeText(getActivity(), "gallery saved", Toast.LENGTH_SHORT).show();
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -295,6 +297,15 @@ public class SecondFragment extends Fragment{
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
+                        Uri mImageCaptureUri = outputFileResults.getSavedUri();
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageCaptureUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        saveToInternalStorage(bitmap);
+                        bitmap = RotateBitmap(bitmap, 90);
+                        image.setImageBitmap(bitmap);
                     }
 
                     @Override
