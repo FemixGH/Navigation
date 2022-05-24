@@ -50,6 +50,7 @@ public class ThirdFragment extends Fragment {
     String[] nameOfFilters = {"asdasd", "asdasd", "asdasd"};
     ImageView img;
     RecyclerView recyclerView;
+    Button toNewFragment;
 
     @Nullable
     @Override
@@ -92,6 +93,20 @@ public class ThirdFragment extends Fragment {
                 //в этой папке(фильтрованных или нет), если нужно много сейвить, могу сделать, но тогда к каждой нужно будет знать путь, пока так
             }
         });
+
+        toNewFragment = binding.openFragment;
+        toNewFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                on_second_fragment nextFrag= new on_second_fragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.openNewFragment, nextFrag, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        });
+
 
 
         // Assume block needs to be inside a Try/Catch block.
@@ -193,4 +208,5 @@ public class ThirdFragment extends Fragment {
         }
         return b;
     }
+
 }
