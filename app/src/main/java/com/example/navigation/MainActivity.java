@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = getSharedPreferences("filter_names", MODE_PRIVATE);
+        prefs = getSharedPreferences("filter_names_2", MODE_PRIVATE);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode());
         destroyPref();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         vpAdapter.addFragment(new SecondFragment(), "EDITING");
-        vpAdapter.addFragment(new ThirdFragment(), "GALLERY OF Filters");
+        vpAdapter.addFragment(new ThirdFragment(prefs), "GALLERY OF Filters");
 
-        vpAdapter.addFragment(new FirstFragment(), "CUSTOM FILTER");
+        vpAdapter.addFragment(new FirstFragment(prefs), "CUSTOM FILTER");
 
 
         viewPager.setAdapter(vpAdapter);
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
             prefs.edit().putBoolean("firstrun", false).commit();
-            prefs.edit().putInt("number_of_filters", 4).commit();
+            prefs.edit().putInt("filter_names_2", 4).commit();
         }
     }
 

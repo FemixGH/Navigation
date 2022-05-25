@@ -1,5 +1,6 @@
 package com.example.navigation;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.example.navigation.databinding.FragmentOnSecondFragmentBinding;
 
 
 public class on_second_fragment extends Fragment {
+    FullFilter filter;
 
     Button back;
     FragmentOnSecondFragmentBinding binding;
@@ -33,21 +36,13 @@ public class on_second_fragment extends Fragment {
 
      binding = FragmentOnSecondFragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
-
-
-
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        back = binding.backToFragment;
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new ThirdFragment());
-                Toast.makeText(getActivity(),  "checked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        binding.infoNameText.setText(filter.getNameFilter());
+
+
     }
     private void replaceFragment(Fragment fragment) {
 

@@ -3,19 +3,13 @@ package com.example.navigation;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Base64;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +21,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import androidx.annotation.UiThread;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.navigation.databinding.FragmentFragment1Binding;
-import com.zomato.photofilters.geometry.Point;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
@@ -47,21 +34,16 @@ import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 
 
-
+@SuppressLint("SetTextI18n")
 public class FirstFragment extends Fragment {
     FullFilter mFilterForExample = new FullFilter(getActivity(), "filter_on_example",
             "shared_preferences_for_example",
@@ -113,11 +95,11 @@ public class FirstFragment extends Fragment {
         View view = binding.getRoot();
         binding.getRoot();
         exampleImage = binding.examplePhoto;
-        prefs = getActivity().getSharedPreferences("filter_names", MODE_PRIVATE);
-        SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
+        prefs = requireActivity().getSharedPreferences("filter_names_2", MODE_PRIVATE);
+        SharedPreferences shared = requireActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
-
+        binding.titleEditOnFiltersEditor.setText(prefs.getString("name_of_example_filter_1", "Enter filter's name"));
         contrast = mFilterForExample.getContrast();
         brightness = mFilterForExample.getBrightness();
         saturation = mFilterForExample.getSaturation();
@@ -126,7 +108,7 @@ public class FirstFragment extends Fragment {
         colorOverlay_red = mFilterForExample.colorOverlay_red;
         colorOverlay_green = mFilterForExample.colorOverlay_green;
         colorOverlay_blue = mFilterForExample.colorOverlay_blue;
-        bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+        bitmap = BitmapFactory.decodeResource(requireContext().getResources(),
                 R.drawable.primer);
 
         setFilteredBitmap(contrast, saturation, colorOverlay, brightness, vignette,
@@ -154,14 +136,18 @@ public class FirstFragment extends Fragment {
 
 
     private Executor getExecutor() {
-        return ContextCompat.getMainExecutor(getActivity());
+        return ContextCompat.getMainExecutor(requireActivity());
     }
 
+
+    public FirstFragment(SharedPreferences prefs) {
+        this.prefs = prefs;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
+        SharedPreferences shared = requireActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
 
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
 
@@ -175,7 +161,7 @@ public class FirstFragment extends Fragment {
         colorOverlay_blue = mFilterForExample.colorOverlay_blue;
 
 
-        bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+        bitmap = BitmapFactory.decodeResource(requireContext().getResources(),
                 R.drawable.primer);
 
         seek_contrast = binding.constContrastSeek;
@@ -227,28 +213,28 @@ public class FirstFragment extends Fragment {
             public void onClick(View view) {
                 if(binding.titleEditOnFiltersEditor.getText().toString()!=null &&
                         binding.titleEditOnFiltersEditor.getText().toString().length()!=0) {
-                    mFilterForExample.setNameFilter(title_edit.toString());
-                    Toast.makeText(getActivity(), mFilterForExample.getNameFilter().toString(), Toast.LENGTH_SHORT).show();
-                    prefs = getActivity().getSharedPreferences("filter_names", MODE_PRIVATE);
+                    mFilterForExample.setNameFilter(title_edit.getText().toString());
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
+                    SharedPreferences.Editor editor = prefs.edit();
                     int n = prefs.getInt("number_of_filters", 0);
                     boolean x = false;
                     for(int i=0;i<n;i++){
 
                         String name = prefs.getString(Integer.toString(i), null);
-                        if(name!=null) {
-                            Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
-                        }
-                        if(name == mFilterForExample.getNameFilter()){
+
+                        if(Objects.equals(name, mFilterForExample.getNameFilter())){
                             x=true;
-                            Toast.makeText(getActivity(), "Filter with this name already exist", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Filter with this name already exist, choose another one", Toast.LENGTH_SHORT).show();
                         }
                     }
                     if(!x) {
-                        mFilterForExample.setMY_PREFS_NAME(Integer.toString(n+1));
-                        prefs.edit().putInt("number_of_filters", n+1).commit();
-                        prefs.edit().putString(Integer.toString(n+1), mFilterForExample.getNameFilter());
+                        mFilterForExample.setMY_PREFS_NAME(Integer.toString(n));
+                        editor.putInt("number_of_filters", n+1).commit();
+                        editor.putString(Integer.toString(n), mFilterForExample.getNameFilter()).commit();
+
                         mFilterForExample.saveFilter(mFilterForExample,getActivity());
-                        Toast.makeText(getActivity(), mFilterForExample.getNameFilter(), Toast.LENGTH_SHORT).show();
+
                     }else{
 
                     }
@@ -260,6 +246,7 @@ public class FirstFragment extends Fragment {
         });
 
         binding.constContrastSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
@@ -417,6 +404,12 @@ public class FirstFragment extends Fragment {
                         mFilterForExample.colorOverlay_blue);}
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        prefs.edit().putString("name_of_example_filter_1", binding.titleEditOnFiltersEditor.getText().toString()).commit();
+        super.onStop();
     }
 
     @Override

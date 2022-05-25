@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +67,8 @@ public class ThirdFragment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_fragment3, container, false);
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
         Activity a = getActivity();
-        prefs = getActivity().getSharedPreferences("filter_names", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
 
         Bitmap bitmap1 = BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.primer);
@@ -89,18 +91,27 @@ public class ThirdFragment extends Fragment {
         bitmap4 = experimentBitmap;
 
         filters.add(new FullFilter(a,"filter_1","0", 0f,53f,12,15));
-        prefs.edit().putString("0", "0");
+        editor.putString("0", "0");
         filters.add(new FullFilter(a,"filter_2","1", 20f,23f,22,25));
-        prefs.edit().putString("1", "1");
+        editor.putString("1", "1");
         filters.add(new FullFilter(a,"filter_3","2", 30f,33f,32,35));
-        prefs.edit().putString("2", "2");
+        editor.putString("2", "2");
         filters.add(new FullFilter(a,"filter_4","3", 40f,43f,42,45));
-        prefs.edit().putString("3", "3");
+        editor.putString("3", "3");
+        editor.commit();
+        Toast.makeText(getActivity(), "4", Toast.LENGTH_SHORT).show();
         photos.add(bitmap1);
         photos.add(bitmap2);
         photos.add(bitmap3);
         photos.add(bitmap4);
         return binding.getRoot();
+    }
+
+    public ThirdFragment() {
+    }
+
+    public ThirdFragment(SharedPreferences prefs) {
+        this.prefs = prefs;
     }
 
     @Override

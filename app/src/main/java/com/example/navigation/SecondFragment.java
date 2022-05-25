@@ -374,15 +374,15 @@ public class SecondFragment extends Fragment{
 
     public void setCameraVisible(FragmentFragment2Binding binding){
 
-        binding.scroll.setVisibility(View.INVISIBLE);
+        binding.scroll.setVisibility(View.GONE);
         binding.constraintWithPreview.setVisibility(View.VISIBLE);
-        binding.Con2.setVisibility(View.INVISIBLE);
+        binding.Con2.setVisibility(View.GONE);
         binding.galleryWithCameraView.setVisibility(View.VISIBLE);
-        binding.capturedImageSecond.setVisibility(View.INVISIBLE);
+        binding.capturedImageSecond.setVisibility(View.GONE);
         binding.cameraPreview.setVisibility(View.VISIBLE);
         binding.takePhotoButton.setVisibility(View.VISIBLE);
         //binding.backToImage.setVisibility(View.VISIBLE);
-        binding.gallery.setVisibility(View.INVISIBLE);
+        binding.gallery.setVisibility(View.GONE);
 
         //binding.openCamera.setVisibility(View.INVISIBLE);
         take_photo_button.setOnClickListener(new View.OnClickListener() {
@@ -398,14 +398,14 @@ public class SecondFragment extends Fragment{
     public void setImageVisible(FragmentFragment2Binding binding){
 
         binding.scroll.setVisibility(View.VISIBLE);
-        binding.constraintWithPreview.setVisibility(View.INVISIBLE);
+        binding.constraintWithPreview.setVisibility(View.GONE);
         binding.Con2.setVisibility(View.VISIBLE);
         binding.capturedImageSecond.setVisibility(View.VISIBLE);
-        binding.cameraPreview.setVisibility(View.INVISIBLE);
-        binding.takePhotoButton.setVisibility(View.INVISIBLE);
+        binding.cameraPreview.setVisibility(View.GONE);
+        binding.takePhotoButton.setVisibility(View.GONE);
         //binding.backToImage.setVisibility(View.INVISIBLE);
         binding.gallery.setVisibility(View.VISIBLE);
-        binding.galleryWithCameraView.setVisibility(View.INVISIBLE);
+        binding.galleryWithCameraView.setVisibility(View.GONE);
 
     }
     private Executor getExecutor() {
