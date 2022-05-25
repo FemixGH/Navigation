@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 30
 
     defaultConfig {
         applicationId "com.example.navigation"
@@ -38,6 +38,11 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
+    allprojects {
+        configurations.all {
+            resolutionStrategy.force 'org.objenesis:objenesis:2.6'
+        }
+    }
 
 }
 
@@ -50,6 +55,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.fragment:fragment:1.4.1'
+    implementation 'edu.stanford.nlp:stanford-adept:2.7.3'
     //implementation files('C:\\Users\\Comp\\AndroidStudioProjects\\Navigation_2\\gradle\\wrapper\\vader-sentiment-analyzer-1.0.jar')
 
     testImplementation 'junit:junit:4.13.2'
@@ -78,6 +84,8 @@ dependencies {
 //
 //    //neuron
 //    implementation 'com.github.socialsensor:sentiment-analysis:sentiment-analysis-0.1'
+    //implementation "edu.stanford.nlp:stanford-corenlp:4.0.0"
+
 
     //dark theme
     implementation 'androidx.appcompat:appcompat:1.6.0-alpha03'

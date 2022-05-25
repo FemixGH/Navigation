@@ -68,10 +68,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-//import ja.burhanrashid52.photoeditor.PhotoEditor;
-//import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-//import com.vader.sentiment.analyzer;
 
 
 public class SecondFragment extends Fragment{
