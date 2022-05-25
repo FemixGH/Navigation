@@ -68,7 +68,10 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
+//import ja.burhanrashid52.photoeditor.PhotoEditor;
+//import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
+//import com.vader.sentiment.analyzer;
 
 
 public class SecondFragment extends Fragment{
@@ -328,7 +331,7 @@ public class SecondFragment extends Fragment{
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Photo have been saved", Toast.LENGTH_SHORT).show();
                         Uri mImageCaptureUri = outputFileResults.getSavedUri();
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageCaptureUri);
@@ -349,6 +352,7 @@ public class SecondFragment extends Fragment{
                     }
                 }
         );
+        setImageVisible(binding);
     }
 
     private void startCameraX(ProcessCameraProvider cameraProvider) {
@@ -529,9 +533,9 @@ public class SecondFragment extends Fragment{
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
                 Toast.makeText(getActivity(), "Camera ect", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getActivity(), "Cameri net", Toast.LENGTH_SHORT).show();
-        }
+            } else {
+                Toast.makeText(getActivity(), "Cameri net", Toast.LENGTH_SHORT).show();
+            }
 
         }else{
             Toast.makeText(getActivity(), "getActivity().getApplicationContext().getPackageManager().hasSystemFeature(\n" +

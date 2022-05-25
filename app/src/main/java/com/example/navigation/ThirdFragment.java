@@ -1,5 +1,6 @@
 package com.example.navigation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
@@ -33,6 +34,8 @@ import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,31 +49,57 @@ import java.util.Date;
 
 
 public class ThirdFragment extends Fragment {
+    SharedPreferences prefs = null;
     private FragmentFragment3Binding binding;
     int a;
     Button zxc;
-    ArrayList<String > nameOfFilters = new ArrayList<String>();
+    ArrayList<FullFilter> filters = new ArrayList<FullFilter>();
     ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
     ImageView img;
     RecyclerView recyclerView;
     Button toNewFragment;
+    Bitmap experimentBitmap;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_fragment3, container, false);
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
+        Activity a = getActivity();
+        prefs = getActivity().getSharedPreferences("filter_names", Context.MODE_PRIVATE);
 
-        nameOfFilters.add("filter_1");
-        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
-                        R.drawable.primer));
-        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.primer));
-        photos.add(BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.primer));
-        nameOfFilters.add("filter_2");
-        nameOfFilters.add("filter_3");
+        Bitmap bitmap1 = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer);
+        Bitmap bitmap2 = loadImageFromStorage();
+        Bitmap bitmap3 = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer);
+        Bitmap bitmap4 = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer);
+        setFilteredBitmap(bitmap1, 20f,23f,22,25,
+                0,0,0,0);
+        bitmap1 = experimentBitmap;
+        Toast.makeText(getActivity(),"setted", Toast.LENGTH_SHORT).show();
+        setFilteredBitmap(bitmap2,0f,53f,12,
+                15,0,0,0,0);
+        bitmap2 =experimentBitmap ;
 
+        setFilteredBitmap(bitmap3,40f,43f,42,45, 50,2,2,0);
+        bitmap3 = experimentBitmap;
+        setFilteredBitmap(bitmap4,40f,43f,42,45, 50,2,2,0);
+        bitmap4 = experimentBitmap;
+
+        filters.add(new FullFilter(a,"filter_1","0", 0f,53f,12,15));
+        prefs.edit().putString("0", "0");
+        filters.add(new FullFilter(a,"filter_2","1", 20f,23f,22,25));
+        prefs.edit().putString("1", "1");
+        filters.add(new FullFilter(a,"filter_3","2", 30f,33f,32,35));
+        prefs.edit().putString("2", "2");
+        filters.add(new FullFilter(a,"filter_4","3", 40f,43f,42,45));
+        prefs.edit().putString("3", "3");
+        photos.add(bitmap1);
+        photos.add(bitmap2);
+        photos.add(bitmap3);
+        photos.add(bitmap4);
         return binding.getRoot();
     }
 
@@ -82,7 +111,8 @@ public class ThirdFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new AdapterRecyclerView(nameOfFilters, photos));
+        recyclerView.setAdapter(new AdapterRecyclerView(filters, photos));
+
         a=0;
 //todo не удалять
 
@@ -119,32 +149,7 @@ public class ThirdFragment extends Fragment {
 
 
 
-        // Assume block needs to be inside a Try/Catch block.
-//        String path = Environment.getExternalStorageDirectory().toString();
-//
-//        Integer counter = 0;
-//        File file = new File(path, "LOLOLO.jpg"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
-//
-//
-//        //outputImage.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
-//
-//
-//        try {
-//            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-//        OutputStream outStream = null;
-//        File file2 = new File(extStorageDirectory, "er.PNG");
-//        try {
-//            outStream = new FileOutputStream(file2);
-//            outputImage.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-//            outStream.flush();
-//            outStream.close();
-//        } catch (Exception e) {
-//
-//        }
+
 
 
     }
@@ -227,4 +232,18 @@ public class ThirdFragment extends Fragment {
 
     }
 
+    public void setFilteredBitmap(Bitmap bitmap,float contrast_1,float saturation_1, int brightness_1, int vignette_1,
+                                  int alpha, float red, float green, float blue){
+                experimentBitmap = bitmap;
+                Filter myFilter = new Filter();
+                myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
+                myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
+                myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
+                myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
+                myFilter.addSubFilter(new ColorOverlaySubFilter(alpha,red,green,blue));
+
+                Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap bitm = myFilter.processFilter(image);
+                experimentBitmap=bitm;
+    }
 }

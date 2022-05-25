@@ -70,6 +70,7 @@ public class FirstFragment extends Fragment {
     private static final String SHARED_FILTERS = "sharedPrefs_filtrs";
     private static final String KEY = "myKey";
     boolean isAnyTask = false;
+    SharedPreferences prefs = null;
     float lastChanges;
     long timeChanges = System.currentTimeMillis();
     Bitmap bitmap;
@@ -112,6 +113,7 @@ public class FirstFragment extends Fragment {
         View view = binding.getRoot();
         binding.getRoot();
         exampleImage = binding.examplePhoto;
+        prefs = getActivity().getSharedPreferences("filter_names", MODE_PRIVATE);
         SharedPreferences shared = getActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
@@ -223,7 +225,36 @@ public class FirstFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Filter has been added", Toast.LENGTH_SHORT).show();
+                if(binding.titleEditOnFiltersEditor.getText().toString()!=null &&
+                        binding.titleEditOnFiltersEditor.getText().toString().length()!=0) {
+                    mFilterForExample.setNameFilter(title_edit.toString());
+                    Toast.makeText(getActivity(), mFilterForExample.getNameFilter().toString(), Toast.LENGTH_SHORT).show();
+                    prefs = getActivity().getSharedPreferences("filter_names", MODE_PRIVATE);
+                    int n = prefs.getInt("number_of_filters", 0);
+                    boolean x = false;
+                    for(int i=0;i<n;i++){
+
+                        String name = prefs.getString(Integer.toString(i), null);
+                        if(name!=null) {
+                            Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
+                        }
+                        if(name == mFilterForExample.getNameFilter()){
+                            x=true;
+                            Toast.makeText(getActivity(), "Filter with this name already exist", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    if(!x) {
+                        mFilterForExample.setMY_PREFS_NAME(Integer.toString(n+1));
+                        prefs.edit().putInt("number_of_filters", n+1).commit();
+                        prefs.edit().putString(Integer.toString(n+1), mFilterForExample.getNameFilter());
+                        mFilterForExample.saveFilter(mFilterForExample,getActivity());
+                        Toast.makeText(getActivity(), mFilterForExample.getNameFilter(), Toast.LENGTH_SHORT).show();
+                    }else{
+
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "Please, give the filter a name", Toast.LENGTH_SHORT).show();
+                }
             }
             //Contrast, ToneCurve, Saturation, ColorOverlay, Contrast, Brightness, Vignette
         });
@@ -446,6 +477,34 @@ public class FirstFragment extends Fragment {
             return b-a;
         }
     }
+    //todo b/w filter
+//    mBitmap = mBitmap.copy( Bitmap.Config.ARGB_8888 , true);
+//
+//    // Get size of the Bitmap
+//    int width = mBitmap.getWidth();
+//    int height = mBitmap.getHeight();
+//
+//
+//                for(int i = 0; i < width; i++){
+//        for(int j = 0; j < height; j++){
+//
+//            // Get RGB values of the current pixel
+//            int currentPixel = mBitmap.getPixel(i, j);
+//            int redValue = Color.red(currentPixel);
+//            int blueValue = Color.blue(currentPixel);
+//            int greenValue = Color.green(currentPixel);
+//
+//            // Get the average value of RGB values
+//            int newColorValue = (int) ((redValue + blueValue + greenValue) / 3);
+//
+//            // Updating values of the current pixel.
+//            // if values of RGB are equal, then resulting color will be Black & White
+//            mBitmap.setPixel(i, j, Color.rgb(newColorValue, newColorValue, newColorValue));
+//        }
+//    }
+
+    // Setting the updated Bitmap to the imageView
+     //           mImageView.setImageBitmap(mBitmap);
     public int modulInt(int a, int b){
         if(a>=b){
             return a-b;

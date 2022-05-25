@@ -29,10 +29,11 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
 
     String[] list;
-    ArrayList<String> filters;
-    ArrayList<Bitmap> photos;
 
-    public AdapterRecyclerView(ArrayList<String> filters,ArrayList<Bitmap> photos){
+    ArrayList<Bitmap> photos;
+    ArrayList<FullFilter> filters;
+
+    public AdapterRecyclerView(ArrayList<FullFilter> filters,ArrayList<Bitmap> photos){
         this.filters = filters;
         this.photos = photos;
     }
@@ -47,7 +48,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull AdapterRecyclerView.MyViewHolder holder, int position) {
-        holder.textView.setText(filters.get(position));
+        holder.textView.setText(filters.get(position).getNameFilter());
         holder.imageView.setImageBitmap(photos.get(position));
     }
 

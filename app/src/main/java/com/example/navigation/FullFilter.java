@@ -17,6 +17,10 @@ public class FullFilter<mContext> {
 
     public String MY_PREFS_NAME;
 
+    public void setMY_PREFS_NAME(String MY_PREFS_NAME) {
+        this.MY_PREFS_NAME = MY_PREFS_NAME;
+    }
+
     float contrast;
     float saturation;
     int colorOverlay_depth;
@@ -30,6 +34,10 @@ public class FullFilter<mContext> {
     int gPointY;
     int bPointX;
     int bPointY;
+
+    public FullFilter() {
+
+    }
 
     int brightness;
     int vignette;

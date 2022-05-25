@@ -46,6 +46,7 @@ import java.util.Properties;
 
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences prefs = null;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = getSharedPreferences("filter_names", MODE_PRIVATE);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode());
         destroyPref();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -133,6 +135,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (prefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            prefs.edit().putBoolean("firstrun", false).commit();
+            prefs.edit().putInt("number_of_filters", 4).commit();
+        }
+    }
 
     private void destroyPref() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
