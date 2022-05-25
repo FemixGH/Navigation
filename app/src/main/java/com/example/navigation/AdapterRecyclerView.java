@@ -3,6 +3,7 @@ package com.example.navigation;
 import static androidx.camera.core.CameraX.getContext;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
@@ -92,12 +94,16 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
                             adapterRecyclerView.notifyItemRemoved(getAbsoluteAdapterPosition());
                             return true;
                             case R.id.action_popup_info:
-
+                                FullFilter f = adapterRecyclerView.filters.get(getAbsoluteAdapterPosition());
                                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                                on_second_fragment nextFrag= new on_second_fragment();
+                                Bundle argument = new Bundle();
+                                argument.putSerializable("key",f);
+                                on_second_fragment nextFrag= new on_second_fragment(f);
+                                nextFrag.setArguments(argument);
                                 String backStateName = nextFrag.getClass().getName();
                                 activity.getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.openNewFragment, nextFrag)
+
                                         .addToBackStack(backStateName)
                                         .commit();
 

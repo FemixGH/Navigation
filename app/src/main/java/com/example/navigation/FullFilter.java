@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.zomato.photofilters.geometry.Point;
 
-public class FullFilter<mContext> {
+import java.io.Serializable;
+
+public class FullFilter<mContext> implements Serializable {
     Activity a;
 
     String nameFilter;
@@ -19,6 +21,10 @@ public class FullFilter<mContext> {
 
     public void setMY_PREFS_NAME(String MY_PREFS_NAME) {
         this.MY_PREFS_NAME = MY_PREFS_NAME;
+    }
+
+    public String getMY_PREFS_NAME() {
+        return MY_PREFS_NAME;
     }
 
     float contrast;

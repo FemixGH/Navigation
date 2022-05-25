@@ -18,16 +18,29 @@ import android.widget.Toast;
 import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.example.navigation.databinding.FragmentOnSecondFragmentBinding;
 
+import java.io.Serializable;
+
 
 public class on_second_fragment extends Fragment {
     FullFilter filter;
 
     Button back;
     FragmentOnSecondFragmentBinding binding;
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+
+        super.onViewStateRestored(savedInstanceState);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+//        Serializable s = savedInstanceState.getSerializable("key");
         super.onCreate(savedInstanceState);
 
+//        if(s!=null) {
+//            filter = (FullFilter) getActivity().getIntent().getSerializableExtra("key");
+//        }
     }
 
     public on_second_fragment() {
@@ -48,6 +61,14 @@ public class on_second_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.infoNameText.setText(filter.getNameFilter());
+        binding.infoBrightnessValue.setText(Integer.toString(filter.getBrightness()));
+        binding.infoColorCorrectionAlphaValue.setText(Integer.toString(filter.getColorOverlay_depth()));
+        binding.infoContrastValue.setText(Float.toString(filter.getContrast()));
+        binding.infoSaturationValue.setText(Float.toString(filter.getSaturation()));
+        binding.infoVignetteValue.setText(Integer.toString(filter.getVignette()));
+        binding.infoColorCorrectionRedValue.setText(Float.toString(filter.getColorOverlay_red()));
+        binding.infoColorCorrectionGreenValue.setText(Float.toString(filter.getColorOverlay_green()));
+        binding.infoColorCorrectionBlueValue.setText(Float.toString(filter.getColorOverlay_blue()));
 
 
     }

@@ -232,10 +232,14 @@ public class FirstFragment extends Fragment {
                         mFilterForExample.setMY_PREFS_NAME(Integer.toString(n));
                         editor.putInt("number_of_filters", n+1).commit();
                         editor.putString(Integer.toString(n), mFilterForExample.getNameFilter()).commit();
+                        mFilterForExample.setMY_PREFS_NAME(mFilterForExample.getNameFilter());
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("df1", mFilterForExample);
+                        getParentFragmentManager().setFragmentResult("dataFrom1", bundle);
 
                         mFilterForExample.saveFilter(mFilterForExample,getActivity());
-
-                    }else{
+                        Toast.makeText(getActivity(), "Filter have been successfully added", Toast.LENGTH_SHORT).show();
 
                     }
                 }else{
