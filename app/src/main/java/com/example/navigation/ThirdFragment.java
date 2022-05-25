@@ -90,21 +90,7 @@ public class ThirdFragment extends Fragment {
         bitmap3 = experimentBitmap;
         setFilteredBitmap(bitmap4,40f,43f,42,45, 50,2,2,0);
         bitmap4 = experimentBitmap;
-        int n = prefs.getInt("number_of_filters", 4);
-        for(int i=0; i<n-4;i++){
-            String s = prefs.getString(Integer.toString(i), "0");
-            String pr = prefs.getString(s, "0");
-            FullFilter f = new FullFilter();
-            f.getFilter(prefs, pr);
-            filters.add(f);
-            Bitmap b = BitmapFactory.decodeResource(getActivity().getResources(),
-                    R.drawable.primer);
-            setFilteredBitmap(b,f.getContrast(),f.getSaturation(), f.getBrightness(),
-                    f.getVignette(),f.getColorOverlay_depth(),f.getColorOverlay_red(),
-                    f.getColorOverlay_green(),f.getColorOverlay_blue());
-            b = experimentBitmap;
-            photos.add(b);
-        }
+
 
         filters.add(new FullFilter(a,"filter_1","0", 0f,53f,12,15));
         editor.putString("0", "0");
@@ -120,6 +106,22 @@ public class ThirdFragment extends Fragment {
         photos.add(bitmap2);
         photos.add(bitmap3);
         photos.add(bitmap4);
+
+        int n = prefs.getInt("number_of_filters", 4);
+        for(int i=0; i<n-4;i++){
+            String s = prefs.getString(Integer.toString(i), "0");
+            String pr = prefs.getString(s, "0");
+            FullFilter f = new FullFilter();
+            f.getFilter(prefs, pr);
+            filters.add(f);
+            Bitmap b = BitmapFactory.decodeResource(getActivity().getResources(),
+                    R.drawable.primer);
+            setFilteredBitmap(b,f.getContrast(),f.getSaturation(), f.getBrightness(),
+                    f.getVignette(),f.getColorOverlay_depth(),f.getColorOverlay_red(),
+                    f.getColorOverlay_green(),f.getColorOverlay_blue());
+            b = experimentBitmap;
+            photos.add(b);
+        }
 
         return binding.getRoot();
     }
