@@ -30,6 +30,13 @@ public class on_second_fragment extends Fragment {
 
     }
 
+    public on_second_fragment() {
+    }
+
+    public on_second_fragment(FullFilter filter) {
+        this.filter = filter;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
