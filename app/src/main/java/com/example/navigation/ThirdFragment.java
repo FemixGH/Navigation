@@ -108,7 +108,7 @@ public class ThirdFragment extends Fragment {
         photos.add(bitmap4);
 
         int n = prefs.getInt("number_of_filters", 4);
-        for(int i=0; i<n-4;i++){
+        for(int i=4; i<n;i++){
             String s = prefs.getString(Integer.toString(i), "0");
             String pr = prefs.getString(s, "0");
             FullFilter f = new FullFilter();
