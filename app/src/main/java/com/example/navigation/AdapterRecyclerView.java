@@ -2,6 +2,7 @@ package com.example.navigation;
 
 import static androidx.camera.core.CameraX.getContext;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,10 +35,12 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     ArrayList<Bitmap> photos;
     ArrayList<FullFilter> filters;
+    SharedPreferences prefs;
 
-    public AdapterRecyclerView(ArrayList<FullFilter> filters,ArrayList<Bitmap> photos){
+    public AdapterRecyclerView(ArrayList<FullFilter> filters, ArrayList<Bitmap> photos, SharedPreferences prefs){
         this.filters = filters;
         this.photos = photos;
+        this.prefs=prefs;
     }
 
     @NonNull
@@ -92,6 +95,10 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
                             adapterRecyclerView.photos.remove(getAbsoluteAdapterPosition());
                             adapterRecyclerView.filters.remove(getAbsoluteAdapterPosition());
                             adapterRecyclerView.notifyItemRemoved(getAbsoluteAdapterPosition());
+                            adapterRecyclerView.prefs.edit().remove(Integer.toString(getAbsoluteAdapterPosition())).commit();
+                            adapterRecyclerView.prefs.edit().remove(adapterRecyclerView.filters.get(getAbsoluteAdapterPosition())
+                                    .getMY_PREFS_NAME()).commit();
+
                             return true;
                             case R.id.action_popup_info:
                                 FullFilter f = adapterRecyclerView.filters.get(getAbsoluteAdapterPosition());

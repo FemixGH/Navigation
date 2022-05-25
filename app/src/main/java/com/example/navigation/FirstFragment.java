@@ -95,7 +95,7 @@ public class FirstFragment extends Fragment {
         View view = binding.getRoot();
         binding.getRoot();
         exampleImage = binding.examplePhoto;
-        prefs = requireActivity().getSharedPreferences("filter_names_2", MODE_PRIVATE);
+
         SharedPreferences shared = requireActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
         mFilterForExample.getFilter(shared, "shared_preferences_for_example");
@@ -214,7 +214,7 @@ public class FirstFragment extends Fragment {
                 if(binding.titleEditOnFiltersEditor.getText().toString()!=null &&
                         binding.titleEditOnFiltersEditor.getText().toString().length()!=0) {
                     mFilterForExample.setNameFilter(title_edit.getText().toString());
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
 
                     SharedPreferences.Editor editor = prefs.edit();
                     int n = prefs.getInt("number_of_filters", 0);
@@ -228,17 +228,17 @@ public class FirstFragment extends Fragment {
                             Toast.makeText(getActivity(), "Filter with this name already exist, choose another one", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    if(!x) {
+                    if(x==false) {
                         mFilterForExample.setMY_PREFS_NAME(Integer.toString(n));
                         editor.putInt("number_of_filters", n+1).commit();
                         editor.putString(Integer.toString(n), mFilterForExample.getNameFilter()).commit();
-                        mFilterForExample.setMY_PREFS_NAME(mFilterForExample.getNameFilter());
 
+                        Toast.makeText(getActivity(),mFilterForExample.getNameFilter() , Toast.LENGTH_SHORT).show();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("df1", mFilterForExample);
                         getParentFragmentManager().setFragmentResult("dataFrom1", bundle);
 
-                        mFilterForExample.saveFilter(mFilterForExample,getActivity());
+                        mFilterForExample.saveFilter(prefs,getActivity(),prefs);
                         Toast.makeText(getActivity(), "Filter have been successfully added", Toast.LENGTH_SHORT).show();
 
                     }
@@ -450,7 +450,7 @@ public class FirstFragment extends Fragment {
             mFilterForExample.setBrightness(brightness_1);
             mFilterForExample.setVignette(vignette_1);
 
-            mFilterForExample.saveFilter(mFilterForExample, getActivity());
+            mFilterForExample.saveFilter(prefs, getActivity(), prefs);
     }
     public boolean shouldChange(float contrast,float saturation,
             int vignette,int brightness){

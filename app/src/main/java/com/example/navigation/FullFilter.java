@@ -63,6 +63,18 @@ public class FullFilter<mContext> implements Serializable {
         this.vignette = vignette;
     }
 
+    public FullFilter(Activity a, String nameFilter, String MY_PREFS_NAME, float contrast, float saturation, int colorOverlay_depth, float colorOverlay_red, float colorOverlay_green, float colorOverlay_blue) {
+        this.a = a;
+        this.nameFilter = nameFilter;
+        this.MY_PREFS_NAME = MY_PREFS_NAME;
+        this.contrast = contrast;
+        this.saturation = saturation;
+        this.colorOverlay_depth = colorOverlay_depth;
+        this.colorOverlay_red = colorOverlay_red;
+        this.colorOverlay_green = colorOverlay_green;
+        this.colorOverlay_blue = colorOverlay_blue;
+    }
+
     public FullFilter(Activity a,
                       String name,
                       String pref,
@@ -239,10 +251,11 @@ public class FullFilter<mContext> implements Serializable {
 //
 //        int brightness;
 //        int vignette;
-    public void saveFilter(FullFilter f, Activity a){
+    public void saveFilter(SharedPreferences prefs, Activity a,SharedPreferences pref){
 
-        SharedPreferences.Editor editor = a.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putString("name", getNameFilter())
+                .putString("prefs", getMY_PREFS_NAME())
                 .putFloat("contrast", getContrast())
                 .putFloat("saturation", getSaturation()).
                 putInt("colorOverlay_depth", getColorOverlay_depth()).
@@ -277,7 +290,7 @@ public class FullFilter<mContext> implements Serializable {
         this.brightness = prefs.getInt("brightness", 0);
         this.vignette = prefs.getInt("vignette", 0);
         this.nameFilter = prefs.getString("name", null);
-        this.MY_PREFS_NAME = shared;
+        this.MY_PREFS_NAME = prefs.getString("prefs", "filter_names_2");
         rgbKnots[0] = new Point(rPointX, rPointY);
         rgbKnots[1] = new Point(gPointX, gPointY);
         rgbKnots[2] = new Point(bPointX, bPointY);

@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
             prefs.edit().putBoolean("firstrun", false).commit();
-            prefs.edit().putInt("filter_names_2", 4).commit();
+            prefs.edit().putInt("number_of_filters", 4).commit();
         }
     }
 

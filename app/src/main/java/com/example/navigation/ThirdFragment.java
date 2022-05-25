@@ -61,6 +61,7 @@ public class ThirdFragment extends Fragment {
     RecyclerView recyclerView;
     Button toNewFragment;
     Bitmap experimentBitmap;
+    Bitmap experimentBitmap_1;
 
     @Nullable
     @Override
@@ -68,16 +69,15 @@ public class ThirdFragment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_fragment3, container, false);
         binding = FragmentFragment3Binding.inflate(inflater, container, false);
         Activity a = getActivity();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        experimentBitmap_1 = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.primer);
+
         SharedPreferences.Editor editor = prefs.edit();
 
-        Bitmap bitmap1 = BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.primer);
-        Bitmap bitmap2 = loadImageFromStorage();
-        Bitmap bitmap3 = BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.primer);
-        Bitmap bitmap4 = BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.primer);
+        Bitmap bitmap1 = loadImageFromStorage();
+        Bitmap bitmap2 = experimentBitmap_1;
+        Bitmap bitmap3 = loadImageFromStorage();
+        Bitmap bitmap4 = experimentBitmap_1;
         setFilteredBitmap(bitmap1, 20f,23f,22,25,
                 0,0,0,0);
         bitmap1 = experimentBitmap;
@@ -110,12 +110,12 @@ public class ThirdFragment extends Fragment {
         int n = prefs.getInt("number_of_filters", 4);
         for(int i=4; i<n;i++){
             String s = prefs.getString(Integer.toString(i), "0");
+            Toast.makeText(a, prefs.getString(Integer.toString(i), "0"), Toast.LENGTH_SHORT).show();
             String pr = prefs.getString(s, "0");
             FullFilter f = new FullFilter();
-            f.getFilter(prefs, pr);
+            f.getFilter(prefs, s);
             filters.add(f);
-            Bitmap b = BitmapFactory.decodeResource(getActivity().getResources(),
-                    R.drawable.primer);
+            Bitmap b = experimentBitmap_1;
             setFilteredBitmap(b,f.getContrast(),f.getSaturation(), f.getBrightness(),
                     f.getVignette(),f.getColorOverlay_depth(),f.getColorOverlay_red(),
                     f.getColorOverlay_green(),f.getColorOverlay_blue());
@@ -141,7 +141,7 @@ public class ThirdFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        AdapterRecyclerView adapter = new AdapterRecyclerView(filters, photos);
+        AdapterRecyclerView adapter = new AdapterRecyclerView(filters, photos, prefs);
         recyclerView.setAdapter(adapter);
 
         getParentFragmentManager().setFragmentResultListener("dataFrom1", this, new FragmentResultListener() {
@@ -149,8 +149,7 @@ public class ThirdFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 FullFilter f = (FullFilter) result.getSerializable("df1");
                 filters.add(f);
-                Bitmap bt = BitmapFactory.decodeResource(getActivity().getResources(),
-                        R.drawable.primer);
+                Bitmap bt = experimentBitmap_1;
                 setFilteredBitmap(bt,f.getContrast(),f.getSaturation(), f.getBrightness(),
                         f.getVignette(),f.getColorOverlay_depth(),f.getColorOverlay_red(),
                         f.getColorOverlay_green(),f.getColorOverlay_blue());
@@ -158,6 +157,7 @@ public class ThirdFragment extends Fragment {
                 adapter.photos = photos;
                 adapter.filters = filters;
                 adapter.notifyDataSetChanged();
+                f.saveFilter(prefs, getActivity(),prefs);
             }
         });
 
@@ -262,14 +262,10 @@ public class ThirdFragment extends Fragment {
     public Bitmap loadImageFromStorage() {
         // остает последнюю фотку, это та, которая в главном экране стоит
         Bitmap b = null;
-        try {
-            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
-            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File f = new File(path1, "photo.jpg");
-            b = BitmapFactory.decodeStream(new FileInputStream(f));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File f = new File(path1, "photo.jpg");
+        b = experimentBitmap_1;
         return b;
     }
     private void replaceFragment(Fragment fragment) {
@@ -291,7 +287,7 @@ public class ThirdFragment extends Fragment {
                 myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
                 myFilter.addSubFilter(new ColorOverlaySubFilter(alpha,red,green,blue));
 
-                Bitmap image = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap image = experimentBitmap.copy(Bitmap.Config.ARGB_8888, true);
                 Bitmap bitm = myFilter.processFilter(image);
                 experimentBitmap=bitm;
     }
