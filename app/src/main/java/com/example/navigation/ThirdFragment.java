@@ -69,7 +69,7 @@ public class ThirdFragment extends Fragment {
         setFilteredBitmap(bitmap1, 20f,23f,22,25,
                 0,0,0,0);
         bitmap1 = experimentBitmap;
-        Toast.makeText(getActivity(),"setted", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(),"setted", Toast.LENGTH_SHORT).show();
         setFilteredBitmap(bitmap2,30f,53f,12,
                 15,0,0,0,0);
         bitmap2 =experimentBitmap ;
@@ -89,7 +89,7 @@ public class ThirdFragment extends Fragment {
         filters.add(new FullFilter(a,"filter_4","3", 40f,43f,42,45));
         editor.putString("3", "3");
         editor.commit();
-        Toast.makeText(getActivity(), "4", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "4", Toast.LENGTH_SHORT).show();
         photos.add(bitmap1);
         photos.add(bitmap2);
         photos.add(bitmap3);
@@ -124,7 +124,7 @@ public class ThirdFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences shared = getActivity().getSharedPreferences("pref_filter_f", Context.MODE_PRIVATE);
-        Toast.makeText(getActivity(), "onViewCreated", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "onViewCreated", Toast.LENGTH_SHORT).show();
 
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));

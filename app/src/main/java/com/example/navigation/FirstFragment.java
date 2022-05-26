@@ -297,7 +297,7 @@ public class FirstFragment extends Fragment {
                         binding.constColorOverlayRedValue.setText(Float.toString(colorOverlay_red));
                         binding.constColorOverlayGreenValue.setText(Float.toString(colorOverlay_green));
                         binding.constColorOverlayBlueValue.setText(Float.toString(colorOverlay_blue));
-                        Toast.makeText(getActivity(), "updated", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getActivity(), "updated", Toast.LENGTH_SHORT).show();
 
                         setFilteredBitmap(contrast,saturation,colorOverlay_alpha,brightness,vignette,colorOverlay_alpha,colorOverlay_red
                         ,colorOverlay_green,colorOverlay_blue);

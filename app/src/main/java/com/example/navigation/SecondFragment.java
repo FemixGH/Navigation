@@ -133,7 +133,7 @@ public class SecondFragment extends Fragment{
                 setFilteredBitmap(f.getContrast(),f.getSaturation(),
                         f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
                         ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
-                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "filet has been successfully applied", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -165,7 +165,7 @@ public class SecondFragment extends Fragment{
                 setFilteredBitmap(f.getContrast(),f.getSaturation(),
                         f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
                         ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
-                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "filet has been successfully applied", Toast.LENGTH_SHORT).show();
                 saveToInternalStorage(bitmap);
                 saveToInternalFilteredStorage(clearBitmap, "unfiltered");
             }
@@ -223,14 +223,17 @@ public class SecondFragment extends Fragment{
                 saveToGallery(bitmap);
                 Toast.makeText(getActivity(),"Successfully saved", Toast.LENGTH_SHORT)
                         .show();
+                MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, Long.toString(System.currentTimeMillis()) , "Photo neuron");
+
             }
         });
         bitmap = loadImageFromStorage();
         clearBitmap=loadImageFilteredFromStorage("unfiltered");
         if(bitmap!=null){
             image.setImageBitmap(bitmap);
+            binding.rotateButton.setVisibility(View.VISIBLE);
         }else{
-            binding.rotateButton.setVisibility(View.GONE);
+            binding.rotateButton.setVisibility(View.INVISIBLE);
             binding.reload.setVisibility(View.GONE);
             binding.saveInGallery.setVisibility(View.GONE);
         }
@@ -253,11 +256,11 @@ public class SecondFragment extends Fragment{
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("text", edit.getText().toString());
                 editor.apply();
-                Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Data saved", Toast.LENGTH_SHORT).show();
 
                 String text = sharedPreferences.getString("text", null);
 
-                testMention.setText(text);
+                //testMention.setText(text);
 
 
 
@@ -321,7 +324,7 @@ public class SecondFragment extends Fragment{
                             saveToInternalStorage(bitmap);
                             clearBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                             saveToInternalFilteredStorage(clearBitmap, "unfiltered");
-                            Toast.makeText(getActivity(), "gallery saved", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), "gallery saved", Toast.LENGTH_SHORT).show();
                             binding.rotateButton.setVisibility(View.VISIBLE);
                             binding.reload.setVisibility(View.VISIBLE);
                             binding.saveInGallery.setVisibility(View.VISIBLE);
@@ -340,7 +343,7 @@ public class SecondFragment extends Fragment{
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
                 if(isCameraOpened) {
                     setImageVisible(binding);
                     isCameraOpened=false;
@@ -686,7 +689,7 @@ private String saveToGallery(Bitmap bitmapImage) {
             File photoFile = null;
 
             photoFile = createImageFile();
-            Toast.makeText(getActivity(), "File created", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getActivity(), "File created", Toast.LENGTH_SHORT).show();
 
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -700,14 +703,14 @@ private String saveToGallery(Bitmap bitmapImage) {
                 activityResultLauncher.launch(takePictureIntent);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
-                Toast.makeText(getActivity(), "Camera ect", Toast.LENGTH_SHORT).show();
+               //Toast.makeText(getActivity(), "Camera ect", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getActivity(), "Cameri net", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "No camera on phone", Toast.LENGTH_SHORT).show();
             }
 
         }else{
-            Toast.makeText(getActivity(), "getActivity().getApplicationContext().getPackageManager().hasSystemFeature(\n" +
-                    "                PackageManager.FEATURE_CAMERA)", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "getActivity().getApplicationContext().getPackageManager().hasSystemFeature(\n" +
+//                    "                PackageManager.FEATURE_CAMERA)", Toast.LENGTH_SHORT).show();
         }
     }
     private void galleryAddPic() {
