@@ -12,14 +12,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +39,7 @@ import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -52,6 +51,9 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.google.common.util.concurrent.ListenableFuture;
+//import com.vader.sentiment.analyzer.SentimentAnalyzer;
+//import com.vader.sentiment.analyzer.SentimentPolarities;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,45 +61,63 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Random;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
+//import ja.burhanrashid52.photoeditor.PhotoEditor;
+//import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class SecondFragment extends Fragment {
-    Button search, gallery, back, camera, clear, gallery_camera, open_camera, take_photo_button, rotate_button;
+//import com.vader.sentiment.analyzer;
+
+
+public class SecondFragment extends Fragment{
+    Button search,gallery, back, camera, clear, gallery_camera, open_camera,take_photo_button
+            ,rotate_button;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
-
+    private final String mKEY_TEXT = "myKey_text";
+    private final String mKEY_PHOTO = "myKey_photo";
     private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String SHARED_PREFS_PHOTO = "sharedPrefs_photo";
     private static final String TEXT = "text";
-    public ImageView image;
+    public  ImageView image;
     public Uri mPhoto;
+    public Uri newUri;
     PreviewView cameraPreview;
-    boolean isCameraOpened = false;
-    Button saveToGallery;
-    Button reload;
+    boolean isCameraOpened=false;
+
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+    private String currentImagePath;
     private ImageCapture imageCapture;
-    public Bitmap copyBitmap;
+    private ImageAnalysis imageAnalysis;
 
 
-    private FragmentFragment2Binding binding;
+    public void setImage_2(Uri uri){
+        this.image.setImageURI(uri);
+    }
+
+    private  FragmentFragment2Binding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
         setImageVisible(binding);
 
         return binding.getRoot();
     }
-
-    public void setUri(Uri u) {
-        this.mPhoto = u;
+    public void setUri(Uri u){
+        this.mPhoto=u;
     }
+
+
 
 
     @Override
@@ -105,6 +125,7 @@ public class SecondFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         cameraPreview = binding.cameraPreview;
+        //System.loadLibrary("NativeImageProcessor");
         gallery_camera = binding.galleryWithCameraView;
         open_camera = binding.openCamera;
         edit = binding.SearchTextOn2;
@@ -132,12 +153,12 @@ public class SecondFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }, getExecutor());
+        }, getExecutor() );
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                if(result.getResultCode() == RESULT_OK && result.getData() != null){
 
                     Bundle bundle = result.getData().getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
@@ -147,10 +168,13 @@ public class SecondFragment extends Fragment {
                 }
             }
         });
+        //PhotoEditorView mPhotoEditorView = binding.photoEditorView;
+//todo new library .....
+
 
 
         bitmap = loadImageFromStorage();
-        if (bitmap != null) {
+        if(bitmap!=null){
             image.setImageBitmap(bitmap);
         }
         edit.setText(pref.getString("text", null));
@@ -167,7 +191,7 @@ public class SecondFragment extends Fragment {
         search = binding.button2;
         search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)  {
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("text", edit.getText().toString());
@@ -178,7 +202,17 @@ public class SecondFragment extends Fragment {
 
                 testMention.setText(text);
 
+
+
+
                 String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
+
+//                final SentimentPolarities sentimentPolarities =
+//                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
+//                System.out.println(sentimentPolarities);
+
+
+
             }
         });
 
@@ -191,25 +225,6 @@ public class SecondFragment extends Fragment {
                 saveToInternalStorage(bitmap);
             }
         });
-
-        copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-        reload = binding.reload;
-        reload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadImageFromStorage();
-                 bitmap = copyBitmap.copy(Bitmap.Config.ARGB_8888, true);
-                Toast.makeText(getActivity(), "success", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-        if (bitmap == null) {
-            rotate_button.setVisibility(View.GONE);
-        } else rotate_button.setVisibility(View.VISIBLE);
-
         gallery = binding.gallery;
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +233,6 @@ public class SecondFragment extends Fragment {
 
             }
         });
-
         gallery_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,6 +247,7 @@ public class SecondFragment extends Fragment {
                     public void onActivityResult(Uri result) {
                         image.setImageURI(result);
 
+                        //todo gallery sharedPref
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), result);
                             bitmap = RotateBitmap(bitmap, 90);
@@ -247,38 +262,35 @@ public class SecondFragment extends Fragment {
 
                     }
                 }
-        );
 
-        saveToGallery = binding.saveInGallery;
-        saveToGallery.setOnClickListener(v -> SaveImage(bitmap));
+
+        );
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), "camera", Toast.LENGTH_SHORT).show();
-                if (isCameraOpened) {
+                if(isCameraOpened) {
                     setImageVisible(binding);
-                    isCameraOpened = false;
-                } else {
+                    isCameraOpened=false;
+                }else{
                     setCameraVisible(binding);
-                    isCameraOpened = true;
+                    isCameraOpened=true;
                 }
             }
         });
-
         open_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isCameraOpened) {
+                if(isCameraOpened) {
                     setImageVisible(binding);
-                    isCameraOpened = false;
-                } else {
+                    isCameraOpened=false;
+                }else{
                     setCameraVisible(binding);
-                    isCameraOpened = true;
+                    isCameraOpened=true;
                 }
             }
         });
-
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,6 +318,7 @@ public class SecondFragment extends Fragment {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+
 
 
         imageCapture.takePicture(
@@ -350,6 +363,7 @@ public class SecondFragment extends Fragment {
                 .build();
 
         Preview preview = new Preview.Builder()
+                //.setTargetResolution(new Size(binding.cameraPreview.getWidth(), binding.cameraPreview.getHeight()))
                 .build();
         preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
         imageCapture = new ImageCapture.Builder()
@@ -358,7 +372,7 @@ public class SecondFragment extends Fragment {
         cameraProvider.bindToLifecycle((LifecycleOwner) getActivity(), cameraSelector, imageCapture, preview);
     }
 
-    public void setCameraVisible(FragmentFragment2Binding binding) {
+    public void setCameraVisible(FragmentFragment2Binding binding){
 
         binding.scroll.setVisibility(View.GONE);
         binding.constraintWithPreview.setVisibility(View.VISIBLE);
@@ -367,7 +381,10 @@ public class SecondFragment extends Fragment {
         binding.capturedImageSecond.setVisibility(View.GONE);
         binding.cameraPreview.setVisibility(View.VISIBLE);
         binding.takePhotoButton.setVisibility(View.VISIBLE);
+        //binding.backToImage.setVisibility(View.VISIBLE);
         binding.gallery.setVisibility(View.GONE);
+
+        //binding.openCamera.setVisibility(View.INVISIBLE);
         take_photo_button.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -378,7 +395,7 @@ public class SecondFragment extends Fragment {
     }
 
 
-    public void setImageVisible(FragmentFragment2Binding binding) {
+    public void setImageVisible(FragmentFragment2Binding binding){
 
         binding.scroll.setVisibility(View.VISIBLE);
         binding.constraintWithPreview.setVisibility(View.GONE);
@@ -386,20 +403,65 @@ public class SecondFragment extends Fragment {
         binding.capturedImageSecond.setVisibility(View.VISIBLE);
         binding.cameraPreview.setVisibility(View.GONE);
         binding.takePhotoButton.setVisibility(View.GONE);
+        //binding.backToImage.setVisibility(View.INVISIBLE);
         binding.gallery.setVisibility(View.VISIBLE);
         binding.galleryWithCameraView.setVisibility(View.GONE);
 
     }
-
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(getActivity());
     }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        dispatchTakePictureIntent();
+        //activityResultLauncher.launch(intent);
+    }
 
-    public static Bitmap RotateBitmap(Bitmap source, float angle) {
+//    private File createImageFile() {
+//        @SuppressLint("SimpleDateFormat") String timestamp = new SimpleDateFormat("K:mm a, z").format(new Date());
+//        String imageName = "jpg_"+timestamp+"_";
+//
+//        File storageDir = getActivity().getExternalFilesDir((Environment.DIRECTORY_PICTURES));
+//        File imageFile = null;
+//        try {
+//            //imageFile = File.createTempFile(imageName, ".jpg", storageDir);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        currentImagePath = imageFile.getAbsolutePath();
+//        return imageFile;
+//    }
+
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos =new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     private String saveToInternalStorage(Bitmap bitmapImage) {
@@ -439,7 +501,7 @@ public class SecondFragment extends Fragment {
 
     String currentPhotoPath;
 
-    private File createImageFile() {
+    private File createImageFile(){
         // Create an image file name
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir_for_camera_photo", Context.MODE_PRIVATE);
@@ -448,7 +510,6 @@ public class SecondFragment extends Fragment {
         currentPhotoPath = mypath.getAbsolutePath();
         return mypath;
     }
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (getActivity().getApplicationContext().getPackageManager().hasSystemFeature(
@@ -462,7 +523,7 @@ public class SecondFragment extends Fragment {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 File theDir = new File("imageDir_for_camera_photo");
-                if (!theDir.exists()) {
+                if (!theDir.exists()){
                     theDir.mkdirs();
                 }
                 Uri photoURI = FileProvider.getUriForFile(getActivity(),
@@ -476,47 +537,42 @@ public class SecondFragment extends Fragment {
                 Toast.makeText(getActivity(), "Cameri net", Toast.LENGTH_SHORT).show();
             }
 
-        } else {
+        }else{
             Toast.makeText(getActivity(), "getActivity().getApplicationContext().getPackageManager().hasSystemFeature(\n" +
                     "                PackageManager.FEATURE_CAMERA)", Toast.LENGTH_SHORT).show();
         }
     }
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = image.getWidth();
+        int targetH = image.getHeight();
 
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
 
-    private void SaveImage(Bitmap finalBitmap) {
+        BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
 
-        String root = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        Random generator = new Random();
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
 
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
-        File file = new File(myDir, fname);
-        if (file.exists()) file.delete();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-            out.flush();
-            out.close();
+        // Determine how much to scale down the image
+        int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
 
-        MediaScannerConnection.scanFile(getActivity(), new String[]{file.toString()}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        Log.i("ExternalStorage", "Scanned " + path + ":");
-                        Log.i("ExternalStorage", "-> uri=" + uri);
-                    }
-                });
-
-        Toast.makeText(getActivity(), "saved successfully", Toast.LENGTH_SHORT).show();
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        image.setImageBitmap(bitmap);
     }
 
 

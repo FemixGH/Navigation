@@ -6,23 +6,16 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
@@ -30,7 +23,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.example.navigation.databinding.FragmentFragment3Binding;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
@@ -39,15 +31,11 @@ import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 
 
 public class ThirdFragment extends Fragment {
@@ -82,7 +70,7 @@ public class ThirdFragment extends Fragment {
                 0,0,0,0);
         bitmap1 = experimentBitmap;
         Toast.makeText(getActivity(),"setted", Toast.LENGTH_SHORT).show();
-        setFilteredBitmap(bitmap2,0f,53f,12,
+        setFilteredBitmap(bitmap2,30f,53f,12,
                 15,0,0,0,0);
         bitmap2 =experimentBitmap ;
 
@@ -92,7 +80,7 @@ public class ThirdFragment extends Fragment {
         bitmap4 = experimentBitmap;
 
 
-        filters.add(new FullFilter(a,"filter_1","0", 0f,53f,12,15));
+        filters.add(new FullFilter(a,"filter_1","0", 30f,53f,12,15));
         editor.putString("0", "0");
         filters.add(new FullFilter(a,"filter_2","1", 20f,23f,22,25));
         editor.putString("1", "1");
@@ -110,10 +98,9 @@ public class ThirdFragment extends Fragment {
         int n = prefs.getInt("number_of_filters", 4);
         for(int i=4; i<n;i++){
             String s = prefs.getString(Integer.toString(i), "0");
-            Toast.makeText(a, prefs.getString(Integer.toString(i), "0"), Toast.LENGTH_SHORT).show();
             String pr = prefs.getString(s, "0");
             FullFilter f = new FullFilter();
-            f.getFilter(prefs, s);
+            f.getFilter(prefs,getActivity(), s);
             filters.add(f);
             Bitmap b = experimentBitmap_1;
             setFilteredBitmap(b,f.getContrast(),f.getSaturation(), f.getBrightness(),
@@ -141,7 +128,7 @@ public class ThirdFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        AdapterRecyclerView adapter = new AdapterRecyclerView(filters, photos, prefs);
+        AdapterRecyclerView adapter = new AdapterRecyclerView(filters, photos, prefs,getActivity());
         recyclerView.setAdapter(adapter);
 
         getParentFragmentManager().setFragmentResultListener("dataFrom1", this, new FragmentResultListener() {
@@ -157,11 +144,21 @@ public class ThirdFragment extends Fragment {
                 adapter.photos = photos;
                 adapter.filters = filters;
                 adapter.notifyDataSetChanged();
-                f.saveFilter(prefs, getActivity(),prefs);
+                f.saveFilter(prefs, getActivity(),f.getNameFilter());
             }
         });
 
 
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int itemPosition = recyclerView.getChildLayoutPosition(view);
+                FullFilter item = filters.get(itemPosition);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("df3", item);
+                getParentFragmentManager().setFragmentResult("dataFrom3", bundle);
+            }
+        });
         a=0;
 //todo не удалять
 
