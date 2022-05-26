@@ -3,6 +3,7 @@ package com.example.navigation;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -44,13 +45,21 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 //import com.vader.sentiment.analyzer.SentimentAnalyzer;
 //import com.vader.sentiment.analyzer.SentimentPolarities;
 
@@ -75,11 +84,16 @@ import java.util.concurrent.Executor;
 
 
 public class SecondFragment extends Fragment{
+    private static final int PERMISSION_REQUEST_CAMERA = 87678;
+    private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 56755;
+    private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 234123;
     Button search,gallery, back, camera, clear, gallery_camera, open_camera,take_photo_button
             ,rotate_button;
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
+    Bitmap clearBitmap;
+    FullFilter mFilter = new FullFilter();
     private final String mKEY_TEXT = "myKey_text";
     private final String mKEY_PHOTO = "myKey_photo";
     private static final String SHARED_PREFS = "sharedPrefs";
@@ -90,6 +104,7 @@ public class SecondFragment extends Fragment{
     public Uri newUri;
     PreviewView cameraPreview;
     boolean isCameraOpened=false;
+    SharedPreferences prefs;
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
@@ -110,7 +125,18 @@ public class SecondFragment extends Fragment{
         // Inflate the layout for this fragment
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
         setImageVisible(binding);
+        prefs = getActivity().getSharedPreferences("filter_names_2", MODE_PRIVATE);
+        getParentFragmentManager().setFragmentResultListener("dataFrom3", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                FullFilter f = (FullFilter) result.getSerializable("df3");
+                setFilteredBitmap(f.getContrast(),f.getSaturation(),
+                        f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
+                        ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
+                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
 
+            }
+        });
         return binding.getRoot();
     }
     public void setUri(Uri u){
@@ -132,6 +158,18 @@ public class SecondFragment extends Fragment{
         take_photo_button = binding.takePhotoButton;
         rotate_button = binding.rotateButton;
         ConstraintLayout c = binding.myId1;
+        getParentFragmentManager().setFragmentResultListener("dataFrom3", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                FullFilter f = (FullFilter) result.getSerializable("df3");
+                setFilteredBitmap(f.getContrast(),f.getSaturation(),
+                        f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
+                        ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
+                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
+                saveToInternalStorage(bitmap);
+                saveToInternalFilteredStorage(clearBitmap, "unfiltered");
+            }
+        });
         c.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,10 +210,29 @@ public class SecondFragment extends Fragment{
 //todo new library .....
 
 
-
+        binding.reload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                image.setImageBitmap(clearBitmap);
+                saveToInternalStorage(clearBitmap);
+            }
+        });
+        binding.saveInGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveToGallery(bitmap);
+                Toast.makeText(getActivity(),"Successfully saved", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
         bitmap = loadImageFromStorage();
+        clearBitmap=loadImageFilteredFromStorage("unfiltered");
         if(bitmap!=null){
             image.setImageBitmap(bitmap);
+        }else{
+            binding.rotateButton.setVisibility(View.GONE);
+            binding.reload.setVisibility(View.GONE);
+            binding.saveInGallery.setVisibility(View.GONE);
         }
         edit.setText(pref.getString("text", null));
 
@@ -205,7 +262,7 @@ public class SecondFragment extends Fragment{
 
 
 
-                // String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
+                String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
 
 //                final SentimentPolarities sentimentPolarities =
 //                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
@@ -236,6 +293,15 @@ public class SecondFragment extends Fragment{
         gallery_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+                }
+                if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+
                 mTakePhoto.launch("image/*");
 
             }
@@ -253,7 +319,12 @@ public class SecondFragment extends Fragment{
                             bitmap = RotateBitmap(bitmap, 90);
 
                             saveToInternalStorage(bitmap);
+                            clearBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                            saveToInternalFilteredStorage(clearBitmap, "unfiltered");
                             Toast.makeText(getActivity(), "gallery saved", Toast.LENGTH_SHORT).show();
+                            binding.rotateButton.setVisibility(View.VISIBLE);
+                            binding.reload.setVisibility(View.VISIBLE);
+                            binding.saveInGallery.setVisibility(View.VISIBLE);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -340,6 +411,8 @@ public class SecondFragment extends Fragment{
                         }
 
                         bitmap = RotateBitmap(bitmap, 90);
+                        clearBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                        saveToInternalFilteredStorage(clearBitmap, "unfiltered");
                         saveToInternalStorage(bitmap);
                         image.setImageBitmap(bitmap);
                     }
@@ -393,7 +466,43 @@ public class SecondFragment extends Fragment{
             }
         });
     }
+    private boolean checkWriteExternalPermission()
+    {
+        String permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        int res = getContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+    public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1,
+                                  int alpha, float red, float green, float blue){
+        new Thread() {
+            public void run() {
+                Filter myFilter = new Filter();
+                myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
+                myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
+                myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
+                myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
+                myFilter.addSubFilter(new ColorOverlaySubFilter(alpha,red,green,blue));
 
+                Bitmap imageB = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap bit = myFilter.processFilter(imageB);
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        image.setImageBitmap(bit);
+                        saveToInternalFilteredStorage(imageB,"unfiltered");
+
+                        saveToInternalStorage(bit);
+                    }
+                });
+
+            }
+        }.start();
+        mFilter.setContrast(contrast_1);
+        mFilter.setSaturation(saturation_1);
+        mFilter.setBrightness(brightness_1);
+        mFilter.setVignette(vignette_1);
+
+        mFilter.saveFilter(prefs, getActivity(), "example");
+    }
 
     public void setImageVisible(FragmentFragment2Binding binding){
 
@@ -416,6 +525,41 @@ public class SecondFragment extends Fragment{
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         dispatchTakePictureIntent();
         //activityResultLauncher.launch(intent);
+    }
+    public String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
+        //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, name);
+        FileOutputStream fos = null;
+        try {
+
+            fos = new FileOutputStream(mypath);
+
+            // Use the compress method on the BitMap object to write image to
+            // the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return directory.getAbsolutePath();
+    }
+
+    public Bitmap loadImageFilteredFromStorage(String  name) {
+        //достаёт по пути фотку из отфильтрованных
+        Bitmap b = null;
+        try {
+            ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, name);
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return b;
     }
 
 //    private File createImageFile() {
@@ -463,7 +607,31 @@ public class SecondFragment extends Fragment{
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
+//    ContentValues values = new ContentValues();
+//                values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+private String saveToGallery(Bitmap bitmapImage) {
+    ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+    File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+    // Create imageDir
+    File mypath = new File(directory, "photo.jpg");
+    String path = mypath.getAbsolutePath();
+    FileOutputStream fos = null;
+    try {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, path);
 
+        fos = new FileOutputStream(mypath);
+
+        // Use the compress method on the BitMap object to write image to
+        // the OutputStream
+        bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        fos.close();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return directory.getAbsolutePath();
+}
     private String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
