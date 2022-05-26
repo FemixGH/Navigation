@@ -205,7 +205,7 @@ public class SecondFragment extends Fragment{
 
 
 
-                String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
+                // String textSample = "Strange that I did not know him then,hat friend of mine! I did not even show him then One friendly sign";
 
 //                final SentimentPolarities sentimentPolarities =
 //                        SentimentAnalyzer.getScoresFor("that's a rare and valuable feature.");
