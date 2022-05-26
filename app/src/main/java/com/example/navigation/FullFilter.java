@@ -251,9 +251,11 @@ public class FullFilter<mContext> implements Serializable {
 //
 //        int brightness;
 //        int vignette;
-    public void saveFilter(SharedPreferences prefs, Activity a,SharedPreferences pref){
+    public void saveFilter(SharedPreferences prefs, Activity a,String key){
 
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences preferences = a.getSharedPreferences(key, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putString("name", getNameFilter())
                 .putString("prefs", getMY_PREFS_NAME())
                 .putFloat("contrast", getContrast())
@@ -273,7 +275,9 @@ public class FullFilter<mContext> implements Serializable {
         editor.apply();
     }
 
-    public void getFilter(SharedPreferences prefs, String shared){
+    public void getFilter(SharedPreferences preferences,Activity a, String key){
+
+        SharedPreferences prefs = a.getSharedPreferences(key, MODE_PRIVATE);
 
         this.contrast = prefs.getFloat("contrast", 0);
         this.saturation = prefs.getFloat("saturation", 0);

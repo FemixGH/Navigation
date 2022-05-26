@@ -97,8 +97,8 @@ public class FirstFragment extends Fragment {
         exampleImage = binding.examplePhoto;
 
         SharedPreferences shared = requireActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
-        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
-        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+        mFilterForExample.getFilter(shared, getActivity(), "example");
+
         binding.titleEditOnFiltersEditor.setText(prefs.getString("name_of_example_filter_1", "Enter filter's name"));
         contrast = mFilterForExample.getContrast();
         brightness = mFilterForExample.getBrightness();
@@ -149,7 +149,7 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SharedPreferences shared = requireActivity().getSharedPreferences("shared_preferences_for_example", MODE_PRIVATE);
 
-        mFilterForExample.getFilter(shared, "shared_preferences_for_example");
+        mFilterForExample.getFilter(shared,getActivity(), "example");
 
         contrast = mFilterForExample.getContrast();
         brightness = mFilterForExample.getBrightness();
@@ -233,13 +233,56 @@ public class FirstFragment extends Fragment {
                         editor.putInt("number_of_filters", n+1).commit();
                         editor.putString(Integer.toString(n), mFilterForExample.getNameFilter()).commit();
 
-                        Toast.makeText(getActivity(),mFilterForExample.getNameFilter() , Toast.LENGTH_SHORT).show();
+
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("df1", mFilterForExample);
                         getParentFragmentManager().setFragmentResult("dataFrom1", bundle);
 
-                        mFilterForExample.saveFilter(prefs,getActivity(),prefs);
+                        mFilterForExample.saveFilter(prefs,getActivity(),mFilterForExample.getNameFilter());
                         Toast.makeText(getActivity(), "Filter have been successfully added", Toast.LENGTH_SHORT).show();
+                        mFilterForExample.setContrast(1);
+
+                        mFilterForExample.setSaturation(1);
+                        mFilterForExample.setBrightness(30);
+                        mFilterForExample.setVignette(0);
+                        mFilterForExample.setColorOverlay_red(0);
+                        mFilterForExample.setColorOverlay_blue(0);
+                        mFilterForExample.setColorOverlay_green(0);
+                        mFilterForExample.setColorOverlay_depth(0);
+                        mFilterForExample.saveFilter(shared, getActivity(), "example");
+
+                        contrast=1;
+                        saturation=1;
+                        brightness=30;
+                        vignette=0;
+                        colorOverlay_alpha=0;
+                        colorOverlay_blue=0;
+                        colorOverlay_green=0;
+                        colorOverlay_red=0;
+
+                        seek_contrast.setProgress((int)(contrast*500));
+                        seek_saturation.setProgress((int)(saturation*500));
+                        seek_vignette.setProgress(vignette);
+                        seek_brightness.setProgress(brightness);
+                        seek_colorOverlay_blue.setProgress((int)(colorOverlay_blue*1000));
+                        seek_colorOverlay_green.setProgress((int)(colorOverlay_green*1000));
+                        seek_colorOverlay_red.setProgress((int)(colorOverlay_red*1000));
+                        seek_colorOverlay_alpha.setProgress(colorOverlay_alpha);
+
+                        binding.constBrightnessValue.setText(Integer.toString(brightness));
+                        binding.constVignetteValue.setText(Integer.toString(vignette));
+                        binding.constSaturationValue.setText(Float.toString(saturation));
+                        binding.constContrastValue.setText(Float.toString(contrast));
+
+
+                        binding.constColorOverlayAlphaValue.setText(Integer.toString(colorOverlay_alpha));
+                        binding.constColorOverlayRedValue.setText(Float.toString(colorOverlay_red));
+                        binding.constColorOverlayGreenValue.setText(Float.toString(colorOverlay_green));
+                        binding.constColorOverlayBlueValue.setText(Float.toString(colorOverlay_blue));
+                        Toast.makeText(getActivity(), "updated", Toast.LENGTH_SHORT).show();
+
+                        setFilteredBitmap(contrast,saturation,colorOverlay_alpha,brightness,vignette,colorOverlay_alpha,colorOverlay_red
+                        ,colorOverlay_green,colorOverlay_blue);
 
                     }
                 }else{
@@ -450,7 +493,7 @@ public class FirstFragment extends Fragment {
             mFilterForExample.setBrightness(brightness_1);
             mFilterForExample.setVignette(vignette_1);
 
-            mFilterForExample.saveFilter(prefs, getActivity(), prefs);
+            mFilterForExample.saveFilter(prefs, getActivity(), "example");
     }
     public boolean shouldChange(float contrast,float saturation,
             int vignette,int brightness){

@@ -2,6 +2,9 @@ package com.example.navigation;
 
 import static androidx.camera.core.CameraX.getContext;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
@@ -32,15 +37,17 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
 
     String[] list;
+    Activity a;
 
     ArrayList<Bitmap> photos;
     ArrayList<FullFilter> filters;
     SharedPreferences prefs;
 
-    public AdapterRecyclerView(ArrayList<FullFilter> filters, ArrayList<Bitmap> photos, SharedPreferences prefs){
+    public AdapterRecyclerView(ArrayList<FullFilter> filters, ArrayList<Bitmap> photos, SharedPreferences prefs, Activity a){
         this.filters = filters;
         this.photos = photos;
         this.prefs=prefs;
+        this.a=a;
     }
 
     @NonNull
@@ -88,24 +95,55 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.inflate(R.menu.popup_menu);
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @SuppressLint("RestrictedApi")
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()){
-                        case R.id.action_popup_delete:
-                            adapterRecyclerView.photos.remove(getAbsoluteAdapterPosition());
-                            adapterRecyclerView.filters.remove(getAbsoluteAdapterPosition());
-                            adapterRecyclerView.notifyItemRemoved(getAbsoluteAdapterPosition());
-                            adapterRecyclerView.prefs.edit().remove(Integer.toString(getAbsoluteAdapterPosition())).commit();
-                            adapterRecyclerView.prefs.edit().remove(adapterRecyclerView.filters.get(getAbsoluteAdapterPosition())
-                                    .getMY_PREFS_NAME()).commit();
+                        case R.id.action_popup_apply:
+
+                            FullFilter f = adapterRecyclerView.filters.get(getAbsoluteAdapterPosition());
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("df3", f);
+
+                            AppCompatActivity activityA = (AppCompatActivity) view.getContext();
+                            FragmentManager manager = activityA.getSupportFragmentManager();
+                            manager.setFragmentResult("dataFrom3", bundle);
 
                             return true;
+                        case R.id.action_popup_delete:
+
+                            if(getAbsoluteAdapterPosition()>=4) {
+                                adapterRecyclerView.photos.remove(getAbsoluteAdapterPosition());
+                                adapterRecyclerView.filters.remove(getAbsoluteAdapterPosition());
+                                adapterRecyclerView.notifyItemRemoved(getAbsoluteAdapterPosition());
+                                @SuppressLint("RestrictedApi") SharedPreferences sharedPreferences = getContext().getSharedPreferences("filter_names_2", Context.MODE_PRIVATE);
+                                int n = sharedPreferences.getInt("number_of_filters", 1);
+
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                int i = getAbsoluteAdapterPosition();
+                                String key = sharedPreferences.getString(Integer.toString(getAbsoluteAdapterPosition()), "");
+                                for (int t = i + 1; i < n; i++) {
+                                    String s = sharedPreferences.getString(Integer.toString(t), "");
+                                    sharedPreferences.edit().putString(Integer.toString(t - 1), s);
+                                }
+                                @SuppressLint("RestrictedApi") SharedPreferences pref = getContext().getSharedPreferences(key, Context.MODE_PRIVATE);
+                                editor.remove(Integer.toString(getAbsoluteAdapterPosition())).commit();
+                                SharedPreferences.Editor mEditor = pref.edit();
+                                editor.apply();
+                                mEditor.clear().commit();
+                                n -= 1;
+                                sharedPreferences.edit().putInt("number_of_filters", n).commit();
+
+                            }else{
+                                Toast.makeText(getContext(),"You can't delete default filter", Toast.LENGTH_SHORT).show();
+                            }
+                            return true;
                             case R.id.action_popup_info:
-                                FullFilter f = adapterRecyclerView.filters.get(getAbsoluteAdapterPosition());
+                                FullFilter fi = adapterRecyclerView.filters.get(getAbsoluteAdapterPosition());
                                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                                 Bundle argument = new Bundle();
-                                argument.putSerializable("key",f);
-                                on_second_fragment nextFrag= new on_second_fragment(f);
+                                argument.putSerializable("key",fi);
+                                on_second_fragment nextFrag= new on_second_fragment(fi);
                                 nextFrag.setArguments(argument);
                                 String backStateName = nextFrag.getClass().getName();
                                 activity.getSupportFragmentManager().beginTransaction()

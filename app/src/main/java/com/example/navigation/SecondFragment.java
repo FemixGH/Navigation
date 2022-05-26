@@ -47,10 +47,17 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.example.navigation.databinding.FragmentFragment2Binding;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter;
 //import com.vader.sentiment.analyzer.SentimentAnalyzer;
 //import com.vader.sentiment.analyzer.SentimentPolarities;
 
@@ -80,6 +87,7 @@ public class SecondFragment extends Fragment{
     EditText edit;
     TextView testMention;
     Bitmap bitmap;
+    FullFilter mFilter = new FullFilter();
     private final String mKEY_TEXT = "myKey_text";
     private final String mKEY_PHOTO = "myKey_photo";
     private static final String SHARED_PREFS = "sharedPrefs";
@@ -90,6 +98,7 @@ public class SecondFragment extends Fragment{
     public Uri newUri;
     PreviewView cameraPreview;
     boolean isCameraOpened=false;
+    SharedPreferences prefs;
 
     ActivityResultLauncher<String> mTakePhoto;
     ActivityResultLauncher<Intent> activityResultLauncher;
@@ -110,7 +119,18 @@ public class SecondFragment extends Fragment{
         // Inflate the layout for this fragment
         binding = FragmentFragment2Binding.inflate(inflater, container, false);
         setImageVisible(binding);
+        prefs = getActivity().getSharedPreferences("filter_names_2", MODE_PRIVATE);
+        getParentFragmentManager().setFragmentResultListener("dataFrom3", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                FullFilter f = (FullFilter) result.getSerializable("df3");
+                setFilteredBitmap(f.getContrast(),f.getSaturation(),
+                        f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
+                        ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
+                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
 
+            }
+        });
         return binding.getRoot();
     }
     public void setUri(Uri u){
@@ -132,6 +152,16 @@ public class SecondFragment extends Fragment{
         take_photo_button = binding.takePhotoButton;
         rotate_button = binding.rotateButton;
         ConstraintLayout c = binding.myId1;
+        getParentFragmentManager().setFragmentResultListener("dataFrom3", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                FullFilter f = (FullFilter) result.getSerializable("df3");
+                setFilteredBitmap(f.getContrast(),f.getSaturation(),
+                        f.colorOverlay_depth,f.getBrightness(),f.vignette,f.getColorOverlay_depth()
+                        ,f.getColorOverlay_red(),f.getColorOverlay_green(),f.getColorOverlay_blue());
+                Toast.makeText(getActivity(), "setted filtered", Toast.LENGTH_SHORT).show();
+            }
+        });
         c.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -393,7 +423,34 @@ public class SecondFragment extends Fragment{
             }
         });
     }
+    public void setFilteredBitmap(float contrast_1,float saturation_1, float colorOverlay_1, int brightness_1, int vignette_1,
+                                  int alpha, float red, float green, float blue){
+        new Thread() {
+            public void run() {
+                Filter myFilter = new Filter();
+                myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
+                myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
+                myFilter.addSubFilter(new SaturationSubFilter(saturation_1));
+                myFilter.addSubFilter(new VignetteSubFilter(getContext(), vignette_1));
+                myFilter.addSubFilter(new ColorOverlaySubFilter(alpha,red,green,blue));
 
+                Bitmap imageB = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap bit = myFilter.processFilter(imageB);
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        image.setImageBitmap(imageB);
+                    }
+                });
+
+            }
+        }.start();
+        mFilter.setContrast(contrast_1);
+        mFilter.setSaturation(saturation_1);
+        mFilter.setBrightness(brightness_1);
+        mFilter.setVignette(vignette_1);
+
+        mFilter.saveFilter(prefs, getActivity(), "example");
+    }
 
     public void setImageVisible(FragmentFragment2Binding binding){
 
