@@ -8,13 +8,15 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -61,6 +63,7 @@ public class FirstFragment extends Fragment {
     TextView title;
     EditText title_edit;
     String[] nameOfFilters = {"Contrast","Saturation", "ColorOverlay", "Brightness", "Vignette"};
+
 
     //Contrast, ToneCurve, Saturation, ColorOverlay, Brightness, Vignette
 
@@ -207,6 +210,21 @@ public class FirstFragment extends Fragment {
         });
         //tabLayout.setVisibility(View.GONE);
 
+        CheckBox checkBox = binding.checkBox;
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (checkBox.isChecked()){
+                    exampleImage.setImageBitmap(BWFilter(bitmap));
+                }else{
+                    exampleImage.setImageBitmap(bitmap);
+                }
+            }
+        });
+
+
+
+
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,6 +309,7 @@ public class FirstFragment extends Fragment {
                 Examples[2].setValueOfFilter(i);
                 mFilterForExample.setBrightness(i);
             }
+
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -427,6 +446,7 @@ public class FirstFragment extends Fragment {
                                   int alpha, float red, float green, float blue){
             new Thread() {
                 public void run() {
+
                     Filter myFilter = new Filter();
                     myFilter.addSubFilter(new ContrastSubFilter(contrast_1));
                     myFilter.addSubFilter(new BrightnessSubFilter(brightness_1));
@@ -474,34 +494,9 @@ public class FirstFragment extends Fragment {
             return b-a;
         }
     }
-    //todo b/w filter
-//    mBitmap = mBitmap.copy( Bitmap.Config.ARGB_8888 , true);
-//
-//    // Get size of the Bitmap
-//    int width = mBitmap.getWidth();
-//    int height = mBitmap.getHeight();
-//
-//
-//                for(int i = 0; i < width; i++){
-//        for(int j = 0; j < height; j++){
-//
-//            // Get RGB values of the current pixel
-//            int currentPixel = mBitmap.getPixel(i, j);
-//            int redValue = Color.red(currentPixel);
-//            int blueValue = Color.blue(currentPixel);
-//            int greenValue = Color.green(currentPixel);
-//
-//            // Get the average value of RGB values
-//            int newColorValue = (int) ((redValue + blueValue + greenValue) / 3);
-//
-//            // Updating values of the current pixel.
-//            // if values of RGB are equal, then resulting color will be Black & White
-//            mBitmap.setPixel(i, j, Color.rgb(newColorValue, newColorValue, newColorValue));
-//        }
-//    }
 
-    // Setting the updated Bitmap to the imageView
-     //           mImageView.setImageBitmap(mBitmap);
+
+
     public int modulInt(int a, int b){
         if(a>=b){
             return a-b;
@@ -509,6 +504,8 @@ public class FirstFragment extends Fragment {
             return b-a;
         }
     }
+
+
     public String saveToInternalFilteredStorage(Bitmap bitmapImage, String name) {
         //сохраняет с заданым именем в папку с сохранёнными отфильтроваными фотографиями. НУЖНО писать .jpg
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
@@ -579,6 +576,39 @@ public class FirstFragment extends Fragment {
         }
         return b;
     }
+
+
+    //todo b/w filter
+    public Bitmap BWFilter(Bitmap bitmap) {
+        Bitmap mBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        // Get size of the Bitmap
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+
+                // Get RGB values of the current pixel
+                int currentPixel = mBitmap.getPixel(i, j);
+                int redValue = Color.red(currentPixel);
+                int blueValue = Color.blue(currentPixel);
+                int greenValue = Color.green(currentPixel);
+
+                // Get the average value of RGB values
+                int newColorValue = (int) ((redValue + blueValue + greenValue) / 3);
+
+                // Updating values of the current pixel.
+                // if values of RGB are equal, then resulting color will be Black & White
+                mBitmap.setPixel(i, j, Color.rgb(newColorValue, newColorValue, newColorValue));
+            }
+        }
+        return mBitmap;
+    }
+
+    // Setting the updated Bitmap to the imageView
+    //           mImageView.setImageBitmap(mBitmap);
 
 
 }

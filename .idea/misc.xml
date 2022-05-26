@@ -35,6 +35,12 @@
         <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment1.xml" value="0.4207427536231884" />
         <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment2.xml" value="0.5" />
         <entry key="..\:/Users/Theodor/StudioProjects/Navigation/app/src/main/res/layout/fragment_fragment3.xml" value="0.4207427536231884" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/drawable/reload.xml" value="0.4365" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/drawable/save.xml" value="0.4365" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/layout/fragment_fragment1.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/layout/fragment_fragment2.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Theodor/StudioProjects/Neuro-photo/app/src/main/res/layout/fragment_fragment3.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/activity_main.xml" value="0.1160081053698075" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/card_view.xml" value="0.31712962962962965" />
         <entry key="..\:/Users/osipo/AndroidStudioProjects/Navigation/app/src/main/res/layout/fragment_fragment1.xml" value="0.1160081053698075" />
@@ -47,6 +53,6 @@
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
-    <option name="id" value="Android" />
+    <option name="id" value="jpab" />
   </component>
 </project>
