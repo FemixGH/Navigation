@@ -64,37 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 101:
-                if (grantResults.length > 0) {
 
-                    boolean StoragePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean RecordPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                    if (StoragePermission && RecordPermission) {
-
-                        Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                break;
-        }
-    }
-
-    public boolean checkPermission() {
-
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
-        int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
-
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED && result2==PackageManager.PERMISSION_GRANTED;
-    }
     static {
         System.loadLibrary("NativeImageProcessor");
     }

@@ -85,6 +85,7 @@ import java.util.concurrent.Executor;
 
 public class SecondFragment extends Fragment{
     private static final int PERMISSION_REQUEST_CAMERA = 87678;
+    private static final byte JPEG_QUALITY_MINIMIZE_LATENCY_MODE = 95;
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 56755;
     private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 234123;
     Button search,gallery, back, camera, clear, gallery_camera, open_camera,take_photo_button
@@ -359,6 +360,13 @@ public class SecondFragment extends Fragment{
                 if(isCameraOpened) {
                     setImageVisible(binding);
                     isCameraOpened=false;
+                    try {
+                        startCameraX(cameraProviderFuture.get());
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }else{
                     setCameraVisible(binding);
                     isCameraOpened=true;
@@ -413,10 +421,10 @@ public class SecondFragment extends Fragment{
                             e.printStackTrace();
                         }
 
-                        bitmap = RotateBitmap(bitmap, 90);
-                        clearBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                        saveToInternalFilteredStorage(clearBitmap, "unfiltered");
-                        saveToInternalStorage(bitmap);
+//                        bitmap = RotateBitmap(bitmap, 90);
+//                        clearBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+//                        saveToInternalFilteredStorage(clearBitmap, "unfiltered");
+//                        saveToInternalStorage(bitmap);
                         image.setImageBitmap(bitmap);
                     }
 
